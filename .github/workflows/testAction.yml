@@ -1,5 +1,5 @@
+---
 name: Test Terraform Infrastructure
-
 on: [push, pull_request]
 
 jobs:
@@ -26,12 +26,16 @@ jobs:
       - name: Run Super-Linter
         uses: github/super-linter@v3
         env:
-           DEFAULT_BRANCH: testing
+           DEFAULT_BRANCH: main
            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+           VALIDATE_ALL_CODEBASE: false
+           VALIDATE_GO: true
+           VALIDATE_TERRAFORM: true
+           VALIDATE_TERRAFORM_TERRASCAN: true
+           GOROOT: ""
 
       - shell: bash
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.TEST_AKEY }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.TEST_SKEY }}
         run: cd tests && go test -v -count=1
-

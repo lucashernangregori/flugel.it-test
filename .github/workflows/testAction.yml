@@ -14,14 +14,13 @@ jobs:
 
       - name: Checkout code
         uses: actions/checkout@v2
-
-      # - uses: actions/cache@v2
-      #   with:
-      #    path: ~/go/pkg/mod
-      #    key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-      #    restore-keys: |
-      #      ${{ runner.os }}-go-
       
+      - name: Run Super-Linter
+        uses: github/super-linter@v3
+         env:
+           DEFAULT_BRANCH: testing
+           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - uses: actions/cache@v2
         with:
          path: ~/go/pkg/mod
@@ -30,7 +29,6 @@ jobs:
       - name: restore modules
         run: cd tests && go get -v
       
-      # - name: setup aws credentials
       - shell: bash
         env:
           TEST_AKEY: ${{ secrets.TEST_AKEY }}
@@ -39,9 +37,3 @@ jobs:
           export AWS_ACCESS_KEY_ID="$TEST_AKEY"
           export AWS_SECRET_ACCESS_KEY="$TEST_SKEY"
           cd tests && go test -v -count=1
-       
-      - name: Run Super-Linter
-        uses: github/super-linter@v3
-         env:
-           DEFAULT_BRANCH: testing
-           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

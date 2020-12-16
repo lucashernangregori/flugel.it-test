@@ -40,11 +40,8 @@ jobs:
           export AWS_SECRET_ACCESS_KEY="$TEST_SKEY"
           cd tests && go test -v -count=1
        
-      #- name: execute tests
-      #  run: cd tests && go test -v -count=1
-      # # Runs the Super-Linter action
-      # - name: Run Super-Linter
-      #   uses: github/super-linter@v3
-      #   env:
-      #     DEFAULT_BRANCH: testing
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Run Super-Linter
+        uses: github/super-linter@v3
+         env:
+           DEFAULT_BRANCH: testing
+           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

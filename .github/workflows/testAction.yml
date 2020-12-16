@@ -24,7 +24,10 @@ jobs:
           ~/go/pkg/mod
           ~/go/src
          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-         
+     
+      - name: link go modules in host to docker volume to have super linter grab the modules
+        run: ln -s /home/runner /home/runner/work/_temp/_github_home
+
       - name: restore modules and print list of packages
         run: cd tests && go get -v && ls -Rl ~
       

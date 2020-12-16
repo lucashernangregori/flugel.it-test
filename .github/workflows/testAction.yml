@@ -7,23 +7,23 @@ jobs:
     name: Test Terraform Infrastructure
     runs-on: ubuntu-latest
     steps:
-      - name: Set up Go 1.13
+      - name: Set up Go 1.14
         uses: actions/setup-go@v2
         with:
-          go-version: 1.13
+          go-version: 1.14
 
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - uses: actions/cache@v2
-        with:
-         path: ~/go/pkg/mod
-         key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-         restore-keys: |
-           ${{ runner.os }}-go-
+      # - uses: actions/cache@v2
+      #   with:
+      #    path: ~/go/pkg/mod
+      #    key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+      #    restore-keys: |
+      #      ${{ runner.os }}-go-
 
       - name: execute tests
-        run: go version
+        run: go get -v github.com/gruntwork-io/terratest/modules/aws
       # # Runs the Super-Linter action
       # - name: Run Super-Linter
       #   uses: github/super-linter@v3

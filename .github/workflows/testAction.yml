@@ -49,7 +49,7 @@ jobs:
            VALIDATE_TERRAFORM: true
            VALIDATE_TERRAFORM_TERRASCAN: true
            GOROOT: ""
-        run: /action/lib/linter.sh
+        run: /home/runner/work/_actions/github/super-linter/v3/lib/linter.sh
 
       - shell: bash
         env:

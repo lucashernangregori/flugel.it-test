@@ -26,16 +26,13 @@ jobs:
       - name: restore modules
         run: cd tests && go get -v
       
-      - name: Run Super-Linter
-        uses: github/super-linter@v3
-        env:
-           DEFAULT_BRANCH: main
-           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-           VALIDATE_GO: true
-           VALIDATE_TERRAFORM: true
-           VALIDATE_TERRAFORM_TERRASCAN: true
-           GOROOT: ""
-
+      - name: Run Custom-Lintern
+        runs:
+          using: 'docker'
+          image: './customLintern/Dockerfile'
+          args:
+            - ${{ inputs.who-to-greet }}
+      
       - shell: bash
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.TEST_AKEY }}

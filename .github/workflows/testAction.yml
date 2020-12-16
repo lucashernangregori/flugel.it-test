@@ -28,7 +28,6 @@ jobs:
         env:
            DEFAULT_BRANCH: main
            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-           VALIDATE_ALL_CODEBASE: false
            VALIDATE_GO: true
            VALIDATE_TERRAFORM: true
            VALIDATE_TERRAFORM_TERRASCAN: true

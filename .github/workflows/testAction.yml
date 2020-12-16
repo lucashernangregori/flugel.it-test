@@ -36,7 +36,7 @@ jobs:
            VALIDATE_GO: true
            VALIDATE_TERRAFORM: true
            VALIDATE_TERRAFORM_TERRASCAN: true
-           #GOROOT: ""
+           GOROOT: ""
       
       - shell: bash
         env:

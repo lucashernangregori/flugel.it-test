@@ -20,18 +20,23 @@ jobs:
 
       - uses: actions/cache@v2
         with:
-         path: ~/go/pkg/mod
+         path: |
+          ~/go/pkg/mod
+          ~/go/src
          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
          
-      - name: restore modules
-        run: cd tests && go get -v
+      - name: restore modules and print list of packages
+        run: cd tests && go get -v && ls -l ~/go/src/github.com
       
-      - name: Run Custom-Lintern
-        runs:
-          using: 'docker'
-          image: './customLintern/Dockerfile'
-          args:
-            - ${{ inputs.who-to-greet }}
+      # - name: Run Super-Linter
+      #   uses: github/super-linter@v3
+      #   env:
+      #      DEFAULT_BRANCH: main
+      #      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #      VALIDATE_GO: true
+      #      VALIDATE_TERRAFORM: true
+      #      VALIDATE_TERRAFORM_TERRASCAN: true
+      #      #GOROOT: ""
       
       - shell: bash
         env:

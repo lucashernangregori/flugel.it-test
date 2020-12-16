@@ -22,9 +22,11 @@ jobs:
       #    restore-keys: |
       #      ${{ runner.os }}-go-
 
-      - name: execute tests
+      - name: restore modules
         #run: go get -v github.com/gruntwork-io/terratest/modules/aws
         run: go get -v github.com/gruntwork-io/terratest
+      
+      - name: execute tests
         run: cd tests && go test -v -count=1
       # # Runs the Super-Linter action
       # - name: Run Super-Linter

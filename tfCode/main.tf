@@ -18,7 +18,7 @@ resource "aws_s3_bucket" "first_bucket" {
 
 resource "aws_s3_bucket_public_access_block" "first_bucket" {
   provider = aws.region_master
-  bucket = aws_s3_bucket.first_bucket.id
+  bucket   = aws_s3_bucket.first_bucket.id
 
   block_public_acls       = true
   block_public_policy     = true
@@ -28,8 +28,9 @@ resource "aws_s3_bucket_public_access_block" "first_bucket" {
 
 //resource created to conform super linter false positive: https://github.com/accurics/terrascan/issues/359
 resource "aws_s3_bucket_policy" "first_bucket" {
-  bucket = aws_s3_bucket.first_bucket.id
-  policy = data.aws_iam_policy_document.first_bucket_restricted.json
+  provider = aws.region_master
+  bucket   = aws_s3_bucket.first_bucket.id
+  policy   = data.aws_iam_policy_document.first_bucket_restricted.json
 }
 
 resource "aws_s3_bucket_object" "test_files" {

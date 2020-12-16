@@ -21,10 +21,17 @@ jobs:
       #    key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
       #    restore-keys: |
       #      ${{ runner.os }}-go-
+      
+      - uses: actions/cache@v2
+        with:
+         path: ~/go/pkg/mod
+         key: github.com/gruntwork-io/terratest/modules/aws
+         restore-keys: |
+           github.com/gruntwork-io/terratest/modules/aws
 
-      - name: restore modules
-        #run: go get -v github.com/gruntwork-io/terratest/modules/aws
-        run: go get -v github.com/gruntwork-io/terratest
+      #- name: restore modules
+      #  run: go get -v github.com/gruntwork-io/terratest/modules/aws
+        #run: go get -v github.com/gruntwork-io/terratest
       
       - name: execute tests
         run: cd tests && go test -v -count=1

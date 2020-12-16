@@ -26,7 +26,7 @@ jobs:
          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
          
       - name: restore modules and print list of packages
-        run: cd tests && go get -v && ls -l ~/go/src/github.com
+        run: cd tests && go get -v && ls -Rl ~
       
       # - name: Run Super-Linter
       #   uses: github/super-linter@v3

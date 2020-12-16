@@ -1,7 +1,7 @@
 data "aws_iam_policy_document" "first_bucket_restricted" {
   provider = aws.region_master
   statement {
-    sid     = "DenyAllAccountAccessExceptForAdministrators"
+    sid     = "DenyAllAccountAccessExceptForAdministratorsToS3Bucket"
     effect  = "Deny"
     actions = ["s3:*"]
     resources = [
@@ -15,9 +15,9 @@ data "aws_iam_policy_document" "first_bucket_restricted" {
     }
 
     condition {
-      variable = "aws:PrincipalArn"
+      variable = "aws:username"
       test     = "StringNotLike"
-      values   = ["arn:aws:iam::*:role/aws-reserved/sso.amazonaws.com/AWSReservedSSO_AdministratorAccess_*"]
+      values   = ["cloud_user"]
     }
   }
 }

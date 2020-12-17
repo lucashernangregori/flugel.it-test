@@ -4,7 +4,7 @@
 ### The S3 bucket is versioned and has a policy which only allows the user cloud_user to perform actions on it. This is coded that way in order to follow the best practices that Super-Linter recommends.
 
 ### The repo also contains tests for the TERRAFORM code. Those tests use the TERRATEST GO library in order to perform its magic.
-### The tests checks for the existence of the bucket, the files and its contents to match the desired timestamp.
+### The tests checks for the existence of the bucket, the versioned settings, if it has a policy attached and finally the files and its contents to match the desired timestamp.
 
 ### Finally the repo contains a file to use github automation: Github Actions which is described later in this readme.
 

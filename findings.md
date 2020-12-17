@@ -18,3 +18,8 @@ But there is a last problem: after running the tests, the backend get stuck poin
 We can see that on the .terraform folder on the terraform.tfstate file.
 
 Beware, it can destroy my production settings. We must get the state matter right!
+
+looks like copying src files into gopath and use linting while using go.mod, leads to lint all the libraries referenced in go.mod
+I infer this because of the run time of the lint step, around 32 minutes.
+
+I should erase go.mod and look for a way to restore individual packages of a file... or I must use go get -v for every dependency?

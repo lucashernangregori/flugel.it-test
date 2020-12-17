@@ -34,22 +34,28 @@ jobs:
       #   run: ln -s /home/runner /home/runner/work/_temp/_github_home
       
       - name: restore modules and print list of packages
-        # run: cd tests && go get -v && ls -Rl ~
-        run: cd tests && go get -v && cp -R ~/go /home/runner/work/flugel.it-test/flugel.it-test/go && ls -Rl ~
+        run: cd tests && go get -v && ls -Rl ~
+        #run: cd tests && go get -v && cp -R ~/go /home/runner/work/flugel.it-test/flugel.it-test/go && ls -Rl ~
         # env:
         #   GOPATH: /home/runner/work/flugel.it-test/flugel.it-test/go
       # - name: copy modules and print list of packages
       #   run: cd tests && go get -v && ls -Rl ~
 
-      - name: Run Super-Linter
-        uses: github/super-linter@v3
-        env:
-           DEFAULT_BRANCH: main
-           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-           VALIDATE_GO: true
-           VALIDATE_TERRAFORM: true
-           VALIDATE_TERRAFORM_TERRASCAN: true
-           GOROOT: ""
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v2
+        with:
+          # Required: the version of golangci-lint is required and must be specified without patch version: we always use the latest patch version.
+          version: v1.29
+
+      # - name: Run Super-Linter
+      #   uses: github/super-linter@v3
+      #   env:
+      #      DEFAULT_BRANCH: main
+      #      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #      VALIDATE_GO: true
+      #      VALIDATE_TERRAFORM: true
+      #      VALIDATE_TERRAFORM_TERRASCAN: true
+      #      GOROOT: ""
           #  GOPATH: /github/workspace/go
       
       # - name: Run Super-Linter Manually not from docker

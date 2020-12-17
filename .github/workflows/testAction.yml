@@ -62,6 +62,7 @@ jobs:
            VALIDATE_TERRAFORM: true
            VALIDATE_TERRAFORM_TERRASCAN: true
            GOROOT: ""
+           GO111MODULE: "on"
           #  GOPATH: /github/workspace/go
       
       # - name: Run Super-Linter Manually not from docker

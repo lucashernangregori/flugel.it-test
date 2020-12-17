@@ -24,7 +24,7 @@ jobs:
             ~/go/pkg/mod
          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
       
-      - name: restore modules and copy them to the volume mount path for super-linter
+      - name: Restore modules and copy them to the volume mount path for Super-Linter
         run: |
           cd tests
           go get -v

@@ -35,7 +35,13 @@ jobs:
       
       - name: restore modules and print list of packages
         #run: cd tests && go get -v && ls -Rl ~
-        run: cd tests && go get -v && mkdir /home/runner/work/_temp/_github_home && cp -R ~/go /home/runner/work/_temp/_github_home/go && ls -Rl ~
+        run: |
+          cd tests
+          go get -v
+          mkdir /home/runner/work/_temp/_github_home
+          cp -R ~/go/pkg/mod ~/go/src
+          cp -R ~/go /home/runner/work/_temp/_github_home/go
+          ls -Rl ~
         # env:
         #   GOPATH: /home/runner/work/flugel.it-test/flugel.it-test/go
       # - name: copy modules and print list of packages

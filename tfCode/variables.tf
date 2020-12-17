@@ -10,7 +10,7 @@ variable "region_master" {
 
 variable "bucket_name" {
   type    = string
-  default = "flugel.it.lucashernangregori2.com"
+  default = "flugel.it.lucashernangregori.com"
 }
 
 variable "s3_test_files" {
@@ -20,4 +20,8 @@ variable "s3_test_files" {
 
 locals {
   current_time = timestamp()
+}
+
+data "aws_caller_identity" "current" {
+  provider = aws.region_master
 }

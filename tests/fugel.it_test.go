@@ -33,8 +33,10 @@ func TestTerraformCode(t *testing.T) {
 
 	terraformApplyCurrentTime := terraform.Output(t, terraformOptions, "current_time")
 	fileNames := terraform.OutputList(t, terraformOptions, "s3_test_files")
-	
+
 	aws.AssertS3BucketExists(t, awsRegion, expectedBucketName)
+	aws.AssertS3BucketPolicyExists(t, awsRegion, expectedBucketName)
+	aws.AssertS3BucketVersioningExists(t, awsRegion, expectedBucketName)
 
 	for _, fileName := range fileNames {
 		fileContent := aws.GetS3ObjectContents(t, awsRegion, expectedBucketName, fileName)

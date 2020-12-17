@@ -1,5 +1,5 @@
+---
 name: Test Terraform Infrastructure
-
 on: [push, pull_request]
 
 jobs:
@@ -7,19 +7,43 @@ jobs:
     name: Test Terraform Infrastructure
     runs-on: ubuntu-latest
     steps:
-      - name: Set up Go 1.13
+      - name: Set up Go 1.14
         uses: actions/setup-go@v2
         with:
-          go-version: 1.13
+          go-version: 1.14
 
       - name: Checkout code
         uses: actions/checkout@v2
+        with:
+          # Full git history is needed to get a proper list of changed files within `super-linter`
+          fetch-depth: 0
 
-      - name: execute tests
-      - run: go version
-      # # Runs the Super-Linter action
-      # - name: Run Super-Linter
-      #   uses: github/super-linter@v3
-      #   env:
-      #     DEFAULT_BRANCH: testing
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/cache@v2
+        with:
+         path: |
+            ~/go/pkg/mod
+         key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+      
+      - name: Restore modules and copy them to the volume mount path for Super-Linter
+        run: |
+          cd tests
+          go get -v
+          mkdir /home/runner/work/_temp/_github_home
+          cp -R ~/go /home/runner/work/_temp/_github_home/go
+
+      - name: Run Super-Linter
+        uses: github/super-linter@v3
+        env:
+           DEFAULT_BRANCH: main
+           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+           VALIDATE_GO: true
+           VALIDATE_TERRAFORM: true
+           VALIDATE_TERRAFORM_TERRASCAN: true
+           GOROOT: ""
+           GO111MODULE: "on"
+
+      - shell: bash
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.TEST_AKEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.TEST_SKEY }}
+        run: cd tests && go test -v -count=1

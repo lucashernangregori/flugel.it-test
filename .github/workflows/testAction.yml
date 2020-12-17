@@ -8,8 +8,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: satackey/action-docker-layer-caching@v0.0.11
-      # Ignore the failure of a step and avoid terminating the job.
-      continue-on-error: true
+        # Ignore the failure of a step and avoid terminating the job.
+        continue-on-error: true
       
       - name: Set up Go 1.14
         uses: actions/setup-go@v2

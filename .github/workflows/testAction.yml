@@ -29,22 +29,11 @@ jobs:
         run: echo "::ln -s /home/runner /home/runner/work/_temp/_github_home"
       #   run: ln -s /home/runner /home/runner/work/_temp/_github_home
       
-
-
       - name: restore modules and print list of packages
         run: cd tests && go get -v && ls -Rl ~
       
-      # - name: Run Super-Linter
-      #   uses: github/super-linter@v3
-      #   env:
-      #      DEFAULT_BRANCH: main
-      #      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #      VALIDATE_GO: true
-      #      VALIDATE_TERRAFORM: true
-      #      VALIDATE_TERRAFORM_TERRASCAN: true
-      #      GOROOT: ""
-      
-      - name: Run Super-Linter Manually not from docker
+      - name: Run Super-Linter
+        uses: github/super-linter@v3
         env:
            DEFAULT_BRANCH: main
            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -52,7 +41,16 @@ jobs:
            VALIDATE_TERRAFORM: true
            VALIDATE_TERRAFORM_TERRASCAN: true
            GOROOT: ""
-        run: /home/runner/work/_actions/github/super-linter/v3/lib/linter.sh
+      
+      # - name: Run Super-Linter Manually not from docker
+      #   env:
+      #      DEFAULT_BRANCH: main
+      #      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #      VALIDATE_GO: true
+      #      VALIDATE_TERRAFORM: true
+      #      VALIDATE_TERRAFORM_TERRASCAN: true
+      #      GOROOT: ""
+      #   run: /home/runner/work/_actions/github/super-linter/v3/lib/linter.sh
 
       - shell: bash
         env:

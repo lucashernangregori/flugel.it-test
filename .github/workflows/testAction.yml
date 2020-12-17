@@ -18,20 +18,26 @@ jobs:
           # Full git history is needed to get a proper list of changed files within `super-linter`
           fetch-depth: 0
 
+        # ~/go/pkg/mod
+        # ~/go/src
       - uses: actions/cache@v2
         with:
          path: |
-          ~/go/pkg/mod
-          ~/go/src
+          /home/runner/work/flugel.it-test/flugel.it-test/go/pkg/mod
+          /home/runner/work/flugel.it-test/flugel.it-test/go/src
          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
      
-      - name: link go modules in host to docker volume to have super linter grab the modules
-        run: echo "::ln -s /home/runner /home/runner/work/_temp/_github_home"
+      # - name: link go modules in host to docker volume to have super linter grab the modules
+      #   run: echo "::ln -s /home/runner /home/runner/work/_temp/_github_home"
       #   run: ln -s /home/runner /home/runner/work/_temp/_github_home
       
       - name: restore modules and print list of packages
         run: cd tests && go get -v && ls -Rl ~
-      
+        env:
+          GOPATH: /home/runner/work/flugel.it-test/flugel.it-test/go
+      # - name: copy modules and print list of packages
+      #   run: cd tests && go get -v && ls -Rl ~
+
       - name: Run Super-Linter
         uses: github/super-linter@v3
         env:
@@ -41,6 +47,7 @@ jobs:
            VALIDATE_TERRAFORM: true
            VALIDATE_TERRAFORM_TERRASCAN: true
            GOROOT: ""
+           GOPATH: /github/workspace/go
       
       # - name: Run Super-Linter Manually not from docker
       #   env:

@@ -18,40 +18,20 @@ jobs:
           # Full git history is needed to get a proper list of changed files within `super-linter`
           fetch-depth: 0
 
-        # ~/go/pkg/mod
-        # ~/go/src
-          # /home/runner/work/flugel.it-test/flugel.it-test/go/pkg/mod
-          # /home/runner/work/flugel.it-test/flugel.it-test/go/src
       - uses: actions/cache@v2
         with:
          path: |
             ~/go/pkg/mod
             ~/go/src
          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-     
-      # - name: link go modules in host to docker volume to have super linter grab the modules
-      #   run: echo "::ln -s /home/runner /home/runner/work/_temp/_github_home"
-      #   run: ln -s /home/runner /home/runner/work/_temp/_github_home
       
+      #          cp -R ~/go/pkg/mod ~/go/src
       - name: restore modules and print list of packages
-        #run: cd tests && go get -v && ls -Rl ~
         run: |
           cd tests
           go get -v
           mkdir /home/runner/work/_temp/_github_home
-          cp -R ~/go/pkg/mod ~/go/src
           cp -R ~/go /home/runner/work/_temp/_github_home/go
-          ls -Rl ~
-        # env:
-        #   GOPATH: /home/runner/work/flugel.it-test/flugel.it-test/go
-      # - name: copy modules and print list of packages
-      #   run: cd tests && go get -v && ls -Rl ~
-
-      # - name: golangci-lint
-      #   uses: golangci/golangci-lint-action@v2
-      #   with:
-      #     # Required: the version of golangci-lint is required and must be specified without patch version: we always use the latest patch version.
-      #     version: v1.29
 
       - name: Run Super-Linter
         uses: github/super-linter@v3
@@ -63,17 +43,6 @@ jobs:
            VALIDATE_TERRAFORM_TERRASCAN: true
            GOROOT: ""
            GO111MODULE: "on"
-          #  GOPATH: /github/workspace/go
-      
-      # - name: Run Super-Linter Manually not from docker
-      #   env:
-      #      DEFAULT_BRANCH: main
-      #      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #      VALIDATE_GO: true
-      #      VALIDATE_TERRAFORM: true
-      #      VALIDATE_TERRAFORM_TERRASCAN: true
-      #      GOROOT: ""
-      #   run: /home/runner/work/_actions/github/super-linter/v3/lib/linter.sh
 
       - shell: bash
         env:

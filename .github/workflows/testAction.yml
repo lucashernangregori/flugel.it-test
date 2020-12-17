@@ -20,11 +20,13 @@ jobs:
 
         # ~/go/pkg/mod
         # ~/go/src
+          # /home/runner/work/flugel.it-test/flugel.it-test/go/pkg/mod
+          # /home/runner/work/flugel.it-test/flugel.it-test/go/src
       - uses: actions/cache@v2
         with:
          path: |
-          /home/runner/work/flugel.it-test/flugel.it-test/go/pkg/mod
-          /home/runner/work/flugel.it-test/flugel.it-test/go/src
+            ~/go/pkg/mod
+            ~/go/src
          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
      
       # - name: link go modules in host to docker volume to have super linter grab the modules
@@ -32,9 +34,10 @@ jobs:
       #   run: ln -s /home/runner /home/runner/work/_temp/_github_home
       
       - name: restore modules and print list of packages
-        run: cd tests && go get -v && ls -Rl ~
-        env:
-          GOPATH: /home/runner/work/flugel.it-test/flugel.it-test/go
+        # run: cd tests && go get -v && ls -Rl ~
+        run: cd tests && go get -v && cp -R ~/go /home/runner/work/flugel.it-test/flugel.it-test/go && ls -Rl ~
+        # env:
+        #   GOPATH: /home/runner/work/flugel.it-test/flugel.it-test/go
       # - name: copy modules and print list of packages
       #   run: cd tests && go get -v && ls -Rl ~
 
@@ -47,7 +50,7 @@ jobs:
            VALIDATE_TERRAFORM: true
            VALIDATE_TERRAFORM_TERRASCAN: true
            GOROOT: ""
-           GOPATH: /github/workspace/go
+          #  GOPATH: /github/workspace/go
       
       # - name: Run Super-Linter Manually not from docker
       #   env:

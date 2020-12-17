@@ -67,4 +67,33 @@ If you fork the repo, you must set up your aws credentials. In your github repo 
 In that section you must set a new repository secret named "TEST_AKEY" with your cloud_user Access Key.
 And another secret named TEST_SKEY with your cloud_user Secret Access Key.
 
+## Super-Linter
+This github actions artifact, scans the code for errors with its default ruleset. If it catches one, it stops the build.
+Sometimes we get this error in GO files:
+```
+File is not `goimports`-ed (goimports)
+```
+We can fix that with this command:
+```
+gofmt -w yourcode.go
+```
+
+Sometimes we get this error:
+```
+cannot find package \"github.com/gruntwork-io/terratest/modules/terraform\" in any of:
+	/usr/lib/go/src/github.com/gruntwork-io/terratest/modules/terraform (from $GOROOT)
+  /github/home/go/src/github.com/gruntwork-io/terratest/modules/terraform (from $GOPATH))
+```
+This means that Super-Linter container doesn't have access to our GO modules directory.
+We must copy our modules folder to the directory that the container will use as a volume.
+The container runs with this option:
+```
+-v "/home/runner/work/_temp/_github_home":"/github/home"
+```
+
+The command to copy the files is specified in the testAction.yml file
+```
+cp -R ~/go /home/runner/work/_temp/_github_home/go
+```
+
 Enjoy!

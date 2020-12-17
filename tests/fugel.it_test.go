@@ -9,10 +9,6 @@ import (
 	"github.com/gruntwork-io/terratest/modules/random"
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/stretchr/testify/assert"
-	// "github.com/gruntwork-io/terratest@v0.31.1/modules/aws"
-	// "github.com/gruntwork-io/terratest@v0.31.1/modules/random"
-	// "github.com/gruntwork-io/terratest@v0.31.1/modules/terraform"
-	// "github.com/stretchr/testify@v1.4.0/assert"
 )
 
 func TestTerraformCode(t *testing.T) {

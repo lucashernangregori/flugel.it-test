@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 	"testing"
+	 "os"
 
 	"github.com/gruntwork-io/terratest/modules/aws"
 	"github.com/gruntwork-io/terratest/modules/random"

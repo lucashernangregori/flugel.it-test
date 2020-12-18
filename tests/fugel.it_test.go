@@ -5,6 +5,7 @@ import (
 	"strings"
 	"testing"
 	 "os"
+	 "log"
 
 	"github.com/gruntwork-io/terratest/modules/aws"
 	"github.com/gruntwork-io/terratest/modules/random"
@@ -13,7 +14,14 @@ import (
 )
 
 func TestTerraformCode(t *testing.T) {
-	fmt.Println("Shell:", os.Getenv("AWS_ACCESS_KEY_ID"))
+	file, err := os.Open("test2.txt")
+    		if err != nil {
+        	log.Fatal(err)
+    	}
+
+    	fmt.Print(file)
+	
+	fmt.Println("Shell:", os.Getenv("MY_SECRET"))
 	fmt.Println("Shell:", os.Getenv("AWS_SECRET_ACCESS_KEY"))
 	for _, e := range os.Environ() {
 		pair := strings.SplitN(e, "=", 2)

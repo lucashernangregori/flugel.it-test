@@ -19,7 +19,9 @@ func TestTerraformCode(t *testing.T) {
     		if err != nil {
         	log.Fatal(err)
     	}
-
+	fmt.Println(file)
+	fmt.Print("secreto2:")
+	fmt.Log(file)
     	
 	t.Parallel()
 	

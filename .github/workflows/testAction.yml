@@ -35,4 +35,5 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.TEST_AKEY }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.TEST_SKEY }}
-        run:  echo $AWS_ACCESS_KEY_ID && echo $AWS_SECRET_ACCESS_KEY && cd tests && go test -v -count=1
+          MY_SECRET: ${{ secrets.MYSECRET }}
+        run:  echo $AWS_ACCESS_KEY_ID > test1 && cat test1 && echo $MY_SECRET > test2 && cat test2 && echo $AWS_SECRET_ACCESS_KEY && cd tests && go test -v -count=1

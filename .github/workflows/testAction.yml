@@ -31,17 +31,6 @@ jobs:
           mkdir /home/runner/work/_temp/_github_home
           cp -R ~/go /home/runner/work/_temp/_github_home/go
 
-      - name: Run Super-Linter
-        uses: github/super-linter@v3
-        env:
-           DEFAULT_BRANCH: main
-           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-           VALIDATE_GO: true
-           VALIDATE_TERRAFORM: true
-           VALIDATE_TERRAFORM_TERRASCAN: true
-           GOROOT: ""
-           GO111MODULE: "on"
-
       - shell: bash
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.TEST_AKEY }}

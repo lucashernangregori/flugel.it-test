@@ -14,7 +14,7 @@ import (
 )
 
 func TestTerraformCode(t *testing.T) {
-	file, err := os.Open("test2.txt")
+	file, err := os.Open("test2")
     		if err != nil {
         	log.Fatal(err)
     	}

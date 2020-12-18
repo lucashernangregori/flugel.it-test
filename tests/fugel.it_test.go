@@ -12,8 +12,15 @@ import (
 )
 
 func TestTerraformCode(t *testing.T) {
+	fmt.Println("Shell:", os.Getenv("AWS_ACCESS_KEY_ID"))
+	fmt.Println("Shell:", os.Getenv("AWS_SECRET_ACCESS_KEY"))
+	for _, e := range os.Environ() {
+		pair := strings.SplitN(e, "=", 2)
+		fmt.Printf("%s: %s\n", pair[0], pair[1])
+    	}
+	
 	t.Parallel()
-
+	
 	expectedBucketName := fmt.Sprintf("flugel.it.lucashernangregori.com.terratest-%s", strings.ToLower(random.UniqueId()))
 	awsRegion := "us-west-2"
 

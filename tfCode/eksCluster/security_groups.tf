@@ -1,58 +1,3 @@
-resource "aws_security_group" "worker_group_mgmt_one" {
-  provider    = aws.region_master
-  name_prefix = "worker_group_mgmt_one"
-  vpc_id      = data.aws_vpc.orleans_test.id
-
-  ingress {
-    from_port = 22
-    to_port   = 22
-    protocol  = "tcp"
-
-    cidr_blocks = [
-      "12.0.0.0/8",
-      "186.123.161.221/32",
-    ]
-  }
-}
-
-resource "aws_security_group" "worker_group_mgmt_two" {
-  provider    = aws.region_master
-  name_prefix = "worker_group_mgmt_two"
-  vpc_id      = data.aws_vpc.orleans_test.id
-
-  ingress {
-    from_port = 22
-    to_port   = 22
-    protocol  = "tcp"
-
-    cidr_blocks = [
-      "192.168.0.0/16",
-      "186.123.161.221/32",
-    ]
-  }
-}
-
-resource "aws_security_group" "all_worker_mgmt" {
-  provider    = aws.region_master
-  name_prefix = "all_worker_management"
-  vpc_id      = data.aws_vpc.orleans_test.id
-
-  ingress {
-    from_port = 22
-    to_port   = 22
-    protocol  = "tcp"
-
-    cidr_blocks = [
-      "12.0.0.0/8",
-      "172.16.0.0/12",
-      "192.168.0.0/16",
-      "186.123.161.221/32",
-    ]
-  }
-}
-
-
-
 resource "aws_security_group" "eks_prueba_cluster" {
   provider    = aws.region_master
   name        = "prueba_cluster_sg"
@@ -77,15 +22,70 @@ resource "aws_security_group" "eks_prueba_cluster" {
     protocol  = "tcp"
 
     cidr_blocks = [
-      "186.123.161.221/32",
+      var.my_ip,
     ]
   }
 
   tags = {
-    Name        = "eks-prueba"
-    Responsable = var.responsable
+    Name = "eks-prueba"
   }
 }
+
+resource "aws_security_group" "worker_group_mgmt_one" {
+  provider    = aws.region_master
+  name_prefix = "worker_group_mgmt_one"
+  vpc_id      = data.aws_vpc.orleans_test.id
+
+  ingress {
+    from_port = 22
+    to_port   = 22
+    protocol  = "tcp"
+
+    cidr_blocks = [
+      "12.0.0.0/8",
+      var.my_ip,
+    ]
+  }
+}
+
+resource "aws_security_group" "worker_group_mgmt_two" {
+  provider    = aws.region_master
+  name_prefix = "worker_group_mgmt_two"
+  vpc_id      = data.aws_vpc.orleans_test.id
+
+  ingress {
+    from_port = 22
+    to_port   = 22
+    protocol  = "tcp"
+
+    cidr_blocks = [
+      "192.168.0.0/16",
+      var.my_ip,
+    ]
+  }
+}
+
+resource "aws_security_group" "all_worker_mgmt" {
+  provider    = aws.region_master
+  name_prefix = "all_worker_management"
+  vpc_id      = data.aws_vpc.orleans_test.id
+
+  ingress {
+    from_port = 22
+    to_port   = 22
+    protocol  = "tcp"
+
+    cidr_blocks = [
+      "12.0.0.0/8",
+      "172.16.0.0/12",
+      "192.168.0.0/16",
+      var.my_ip,
+    ]
+  }
+}
+
+
+
 
 # OPTIONAL: Allow inbound traffic from your local workstation external IP
 #to the Kubernetes. You will need to replace A.B.C.D below with

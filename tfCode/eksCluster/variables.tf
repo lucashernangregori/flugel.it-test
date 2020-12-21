@@ -18,6 +18,7 @@ variable "eks_version" {
   default     = "1.18"
 }
 
-variable "responsable" {
-  default = "Lucas"
+variable "my_ip" {
+  type    = string
+  default = "186.123.161.221/32"
 }

@@ -15,7 +15,7 @@ resource "aws_eks_cluster" "prueba_eks" {
     security_group_ids = [aws_security_group.eks_prueba_cluster.id]
     subnet_ids = [
       data.aws_subnet.eks_public_1.id,
-      # data.aws_subnet.eks_public_2.id,
+      data.aws_subnet.eks_public_2.id,
       # data.aws_subnet.eks_public_3.id,
       # data.aws_subnet.eks_private_1.id
     ]
@@ -33,7 +33,7 @@ resource "aws_eks_cluster" "prueba_eks" {
   ]
 }
 
-/*
+
 resource "aws_eks_node_group" "eks_node_group_ec2" {
   provider        = aws.region_master
   cluster_name    = aws_eks_cluster.prueba_eks.name
@@ -41,15 +41,18 @@ resource "aws_eks_node_group" "eks_node_group_ec2" {
   node_role_arn   = aws_iam_role.eks_node_group.arn
   subnet_ids = [
     data.aws_subnet.eks_public_1.id,
-    //data.aws_subnet.eks_public_2.id,
-    # data.aws_subnet.eks_public_3.id,
-    # data.aws_subnet.eks_private_1.id
+    data.aws_subnet.eks_public_2.id,
+    data.aws_subnet.eks_public_3.id,
+    data.aws_subnet.eks_private_1.id,
+    data.aws_subnet.eks_private_2.id,
+    data.aws_subnet.eks_private_3.id
   ]
+  instance_types = ["t3.micro"]
 
   scaling_config {
-    desired_size = 3
-    max_size     = 6
-    min_size     = 3
+    desired_size = 8
+    max_size     = 8
+    min_size     = 8
   }
 
   # Ensure that IAM Role permissions are created before and deleted after EKS Node Group handling.
@@ -61,4 +64,3 @@ resource "aws_eks_node_group" "eks_node_group_ec2" {
     aws_iam_role_policy_attachment.example-AmazonEC2ContainerRegistryReadOnly,
   ]
 }
-*/

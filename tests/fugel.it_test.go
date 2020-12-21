@@ -8,6 +8,8 @@ import (
 	"github.com/gruntwork-io/terratest/modules/aws"
 	"github.com/gruntwork-io/terratest/modules/random"
 	"github.com/gruntwork-io/terratest/modules/terraform"
+	test_structure "github.com/gruntwork-io/terratest/modules/test-structure"
+
 	"github.com/stretchr/testify/assert"
 )
 
@@ -17,8 +19,9 @@ func TestTerraformCode(t *testing.T) {
 	expectedBucketName := fmt.Sprintf("flugel.it.lucashernangregori.com.terratest-%s", strings.ToLower(random.UniqueId()))
 	awsRegion := "us-west-2"
 
+	_fixturesDir := test_structure.CopyTerraformFolderToTemp(t, "../tfCode", ".")
 	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
-		TerraformDir: "../tfCode",
+		TerraformDir: _fixturesDir,
 		BackendConfig: map[string]interface{}{
 			"path": "./testBackend.tfstate",
 		},

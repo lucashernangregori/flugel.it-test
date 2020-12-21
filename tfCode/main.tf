@@ -1,6 +1,8 @@
 terraform {
   required_version = ">= 0.14"
-  backend "local" {}
+  backend "local" {
+    path = "terraform.tfstate"
+  }
 }
 
 resource "aws_s3_bucket" "first_bucket" {

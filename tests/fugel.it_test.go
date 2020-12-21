@@ -19,7 +19,7 @@ func TestTerraformCode(t *testing.T) {
 	expectedBucketName := fmt.Sprintf("flugel.it.lucashernangregori.com.terratest-%s", strings.ToLower(random.UniqueId()))
 	awsRegion := "us-west-2"
 
-	_fixturesDir := test_structure.CopyTerraformFolderToTemp(t, "../tfCode", ".")
+	_fixturesDir := test_structure.CopyTerraformFolderToTemp(t, "../tfCode/s3", ".")
 	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
 		TerraformDir: _fixturesDir,
 		BackendConfig: map[string]interface{}{

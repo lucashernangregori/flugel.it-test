@@ -32,3 +32,17 @@ data "aws_subnet" "eks_private_1" {
     Name = "eks_private_1"
   }
 }
+
+data "aws_subnet" "eks_private_2" {
+  provider = aws.region_master
+  tags = {
+    Name = "eks_private_2"
+  }
+}
+
+data "aws_subnet" "eks_private_3" {
+  provider = aws.region_master
+  tags = {
+    Name = "eks_private_3"
+  }
+}

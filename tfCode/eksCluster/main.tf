@@ -50,9 +50,9 @@ resource "aws_eks_node_group" "eks_node_group_ec2" {
   instance_types = ["t3.micro"]
 
   scaling_config {
-    desired_size = 8
-    max_size     = 8
-    min_size     = 8
+    desired_size = 4
+    max_size     = 4
+    min_size     = 4
   }
 
   # Ensure that IAM Role permissions are created before and deleted after EKS Node Group handling.

@@ -62,15 +62,15 @@ resource "aws_eks_node_group" "eks_node_group_ec2_public" {
   ]
 }
 
-resource "aws_eks_node_group" "eks_node_group_ec2_private" {
+resource "aws_eks_node_group" "eks_node_group_ec2_private_2" {
   provider        = aws.region_master
   cluster_name    = aws_eks_cluster.prueba_eks.name
-  node_group_name = "ec2_example_private"
+  node_group_name = "ec2_example_private_2"
   node_role_arn   = aws_iam_role.eks_node_group.arn
   subnet_ids = [
     data.aws_subnet.eks_private_1.id,
-     data.aws_subnet.eks_private_2.id,
-     data.aws_subnet.eks_private_3.id
+    #  data.aws_subnet.eks_private_2.id,
+    #  data.aws_subnet.eks_private_3.id
   ]
   instance_types = ["t3.micro"]
 

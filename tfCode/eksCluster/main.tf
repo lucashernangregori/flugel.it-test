@@ -17,7 +17,7 @@ resource "aws_eks_cluster" "prueba_eks" {
       data.aws_subnet.eks_public_1.id,
       data.aws_subnet.eks_public_2.id,
       # data.aws_subnet.eks_public_3.id,
-      # data.aws_subnet.eks_private_1.id
+      data.aws_subnet.eks_private_1.id
     ]
     endpoint_private_access = "true"
     endpoint_public_access  = "true"
@@ -43,9 +43,9 @@ resource "aws_eks_node_group" "eks_node_group_ec2" {
     data.aws_subnet.eks_public_1.id,
     data.aws_subnet.eks_public_2.id,
     data.aws_subnet.eks_public_3.id,
-    data.aws_subnet.eks_private_1.id,
-    data.aws_subnet.eks_private_2.id,
-    data.aws_subnet.eks_private_3.id
+    # data.aws_subnet.eks_private_1.id,
+    # data.aws_subnet.eks_private_2.id,
+    # data.aws_subnet.eks_private_3.id
   ]
   instance_types = ["t3.micro"]
 

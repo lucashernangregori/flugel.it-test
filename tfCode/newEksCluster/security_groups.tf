@@ -26,7 +26,7 @@ resource "aws_security_group_rule" "eks_cluster-ingress-node-https" {
   from_port                = 443
   protocol                 = "tcp"
   security_group_id        = aws_security_group.eks_cluster.id
-  source_security_group_id = aws_security_group.eks-node.id
+  source_security_group_id = aws_security_group.eks_node.id
   to_port                  = 443
   type                     = "ingress"
 }
@@ -45,7 +45,7 @@ resource "aws_security_group_rule" "eks_cluster-ingress-workstation-https" {
 ##########################
 # NODES
 #####################3
-resource "aws_security_group" "eks-node" {
+resource "aws_security_group" "eks_node" {
   name        = "eks-worker-node"
   description = "Security group for all nodes in the cluster"
   vpc_id      = aws_vpc.eks.id
@@ -67,8 +67,8 @@ resource "aws_security_group_rule" "eks-node-ingress-self" {
   description              = "Allow node to communicate with each other"
   from_port                = 0
   protocol                 = "-1"
-  security_group_id        = aws_security_group.eks-node.id
-  source_security_group_id = aws_security_group.eks-node.id
+  security_group_id        = aws_security_group.eks_node.id
+  source_security_group_id = aws_security_group.eks_node.id
   to_port                  = 65535
   type                     = "ingress"
 }

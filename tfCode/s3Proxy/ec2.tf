@@ -12,7 +12,7 @@ resource "aws_instance" "traefik" {
   instance_type               = "t3.medium"
   key_name                    = aws_key_pair.lucas.key_name
   subnet_id                   = aws_subnet.test_private[count.index].id
-  associate_public_ip_address = true
+  associate_public_ip_address = false
   vpc_security_group_ids = [
     aws_security_group.traefik.id,
     aws_security_group.remote_troubleshooting.id
@@ -35,7 +35,7 @@ resource "aws_security_group" "traefik" {
 
 resource "aws_security_group" "remote_troubleshooting" {
   provider = aws.region_master
-  name     = "traefik"
+  name     = "troubleshooting"
 
   vpc_id = aws_vpc.test.id
 
@@ -47,18 +47,33 @@ resource "aws_security_group" "remote_troubleshooting" {
   }
 }
 
-# resource "aws_lb" "test" {
-#   name               = "traefik test"
-#   internal           = false
-#   load_balancer_type = "application"
-#   security_groups    = [aws_security_group.lb_sg.id]
-#   subnets            = aws_subnet.test_public.id
+resource "aws_lb" "traefik" {
+  provider           = aws.region_master
+  name               = "traefic-to-s3"
+  internal           = false
+  load_balancer_type = "application"
+  security_groups    = [aws_security_group.lb_sg.id]
+  subnets            = aws_subnet.test_private.*.id
 
-# #   enable_deletion_protection = false
+  #   enable_deletion_protection = false
 
-# #   access_logs {
-# #     bucket  = aws_s3_bucket.lb_logs.bucket
-# #     prefix  = "test-lb"
-# #     enabled = true
-# #   }
-# }
+  #   access_logs {
+  #     bucket  = aws_s3_bucket.lb_logs.bucket
+  #     prefix  = "test-lb"
+  #     enabled = true
+  #   }
+}
+
+resource "aws_security_group" "lb_sg" {
+  provider = aws.region_master
+  name     = "lb_sg"
+
+  vpc_id = aws_vpc.test.id
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "TCP"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}

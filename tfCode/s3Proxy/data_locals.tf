@@ -24,6 +24,18 @@ data "aws_availability_zones" "available" {
   provider = aws.region_master
 }
 
+# data "aws_vpc_endpoint_service" "s3" {
+#   provider     = aws.region_master
+#   service      = "s3"
+#   service_type = "Gateway"
+# }
+
+data "aws_vpc_endpoint" "s3" {
+  provider     = aws.region_master
+  vpc_id       = aws_vpc.test.id
+  service_name = "com.amazonaws.us-east-1.s3"
+}
+
 locals {
   workstation_external_cidr = "${chomp(data.http.workstation_external_ip.body)}/32"
 }

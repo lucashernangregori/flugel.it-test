@@ -1,5 +1,5 @@
-resource "aws_iam_role" "eks-cluster" {
-  name = "terraform-eks-cluster"
+resource "aws_iam_role" "eks_cluster" {
+  name = "terraform-eks_cluster"
 
   assume_role_policy = <<POLICY
 {
@@ -17,12 +17,12 @@ resource "aws_iam_role" "eks-cluster" {
 POLICY
 }
 
-resource "aws_iam_role_policy_attachment" "eks-cluster-AmazonEKSClusterPolicy" {
+resource "aws_iam_role_policy_attachment" "eks_cluster_AmazonEKSClusterPolicy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
-  role       = aws_iam_role.eks-cluster.name
+  role       = aws_iam_role.eks_cluster.name
 }
 
-resource "aws_iam_role_policy_attachment" "eks-cluster-AmazonEKSServicePolicy" {
+resource "aws_iam_role_policy_attachment" "eks_cluster_AmazonEKSServicePolicy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSServicePolicy"
-  role       = aws_iam_role.eks-cluster.name
+  role       = aws_iam_role.eks_cluster.name
 }

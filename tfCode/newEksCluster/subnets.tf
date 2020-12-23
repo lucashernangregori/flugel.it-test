@@ -1,4 +1,4 @@
-resource "aws_subnet" "eks-public" {
+resource "aws_subnet" "eks_public" {
   count = length(var.public_subnets)
 
   availability_zone = data.aws_availability_zones.available.names[count.index]
@@ -9,11 +9,11 @@ resource "aws_subnet" "eks-public" {
 
   tags = map(
     "Name", "eks-public-subnet",
-    "kubernetes.io/cluster/${var.cluster-name}", "shared",
+    "kubernetes.io/cluster/${var.cluster_name}", "shared",
   )
 }
 
-resource "aws_subnet" "eks-private" {
+resource "aws_subnet" "eks_private" {
   count = length(var.private_subnets)
 
   availability_zone = data.aws_availability_zones.available.names[count.index]
@@ -22,7 +22,7 @@ resource "aws_subnet" "eks-private" {
 
   tags = map(
     "Name", "eks-private-subnet",
-    "kubernetes.io/cluster/${var.cluster-name}", "shared",
+    "kubernetes.io/cluster/${var.cluster_name}", "shared",
     "kubernetes.io/role/internal-elb", "1",
   )
 }

@@ -1,9 +1,9 @@
 resource "aws_eks_node_group" "eks_node_group_ec2_public" {
-  cluster_name    = var.cluster-name
+  cluster_name    = var.cluster_name
   node_group_name = "ec2_example"
   node_role_arn   = aws_iam_role.eks_node_group.arn
   subnet_ids = [
-    aws_subnet.eks-public[0].id,
+    aws_subnet.eks_public[0].id,
   ]
   instance_types = ["t3.micro"]
 
@@ -23,7 +23,7 @@ resource "aws_eks_node_group" "eks_node_group_ec2_public" {
   # Ensure that IAM Role permissions are created before and deleted after EKS Node Group handling.
   # Otherwise, EKS will not be able to properly delete EC2 Instances and Elastic Network Interfaces.
   depends_on = [
-    aws_eks_cluster.eks-cluster,
+    aws_eks_cluster.eks_cluster,
     aws_iam_role_policy_attachment.example-AmazonEKSWorkerNodePolicy,
     aws_iam_role_policy_attachment.example-AmazonEKS_CNI_Policy,
     aws_iam_role_policy_attachment.example-AmazonEC2ContainerRegistryReadOnly,
@@ -31,11 +31,11 @@ resource "aws_eks_node_group" "eks_node_group_ec2_public" {
 }
 
 resource "aws_eks_node_group" "eks_node_group_ec2_private" {
-  cluster_name    = var.cluster-name
+  cluster_name    = var.cluster_name
   node_group_name = "ec2_example_private"
   node_role_arn   = aws_iam_role.eks_node_group.arn
   subnet_ids = [
-    aws_subnet.eks-private[0].id,
+    aws_subnet.eks_private[0].id,
   ]
   instance_types = ["t3.micro"]
 
@@ -55,7 +55,7 @@ resource "aws_eks_node_group" "eks_node_group_ec2_private" {
   # Ensure that IAM Role permissions are created before and deleted after EKS Node Group handling.
   # Otherwise, EKS will not be able to properly delete EC2 Instances and Elastic Network Interfaces.
   depends_on = [
-    aws_eks_cluster.eks-cluster,
+    aws_eks_cluster.eks_cluster,
     aws_iam_role_policy_attachment.example-AmazonEKSWorkerNodePolicy,
     aws_iam_role_policy_attachment.example-AmazonEKS_CNI_Policy,
     aws_iam_role_policy_attachment.example-AmazonEC2ContainerRegistryReadOnly,

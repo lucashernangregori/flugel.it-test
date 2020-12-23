@@ -1,6 +1,6 @@
 variable "cluster-name" {
-  type        = string
-  default     = "myeks"
+  type    = string
+  default = "myeks"
 }
 
 variable "public_subnets" {

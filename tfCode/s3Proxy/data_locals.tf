@@ -1,4 +1,5 @@
 data "aws_ami" "ubuntu" {
+  provider    = aws.region_master
   most_recent = true
 
   filter {
@@ -15,10 +16,14 @@ data "aws_ami" "ubuntu" {
 }
 
 data "http" "workstation_external_ip" {
-  url = "http://ipv4.icanhazip.com"
+  provider = http
+  url      = "http://ipv4.icanhazip.com"
 }
 
-# Override with variable or hardcoded value if necessary
+data "aws_availability_zones" "available" {
+  provider = aws.region_master
+}
+
 locals {
   workstation_external_cidr = "${chomp(data.http.workstation_external_ip.body)}/32"
 }

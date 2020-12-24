@@ -9,7 +9,6 @@ resource "aws_instance" "bastion" {
     aws_security_group.bastion.id,
     aws_security_group.remote_troubleshooting.id
   ]
-
 }
 
 resource "aws_security_group" "bastion" {
@@ -31,5 +30,36 @@ resource "aws_security_group" "bastion" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
+}
 
+resource "aws_security_group" "remote_troubleshooting" {
+  provider = aws.region_master
+  name     = "troubleshooting"
+
+  vpc_id = aws_vpc.test.id
+
+  ingress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = [local.workstation_external_cidr]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_security_group_rule" "remote_troubleshooting" {
+  provider                 = aws.region_master
+  description              = "Allow machines with the same sg to comunicate to each other"
+  from_port                = 0
+  to_port                  = 0
+  protocol                 = "-1"
+  security_group_id        = aws_security_group.remote_troubleshooting.id
+  source_security_group_id = aws_security_group.remote_troubleshooting.id
+  type                     = "ingress"
 }

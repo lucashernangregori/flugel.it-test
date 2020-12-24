@@ -77,3 +77,46 @@ resource "aws_security_group" "lb_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
+
+# resource "aws_lb_listener" "front_end" {
+#   load_balancer_arn = aws_lb.front_end.arn
+#   port              = "443"
+#   protocol          = "HTTPS"
+#   ssl_policy        = "ELBSecurityPolicy-2016-08"
+#   certificate_arn   = "arn:aws:iam::187416307283:server-certificate/test_cert_rab3wuqwgja25ct3n4jdj2tzu4"
+
+#   default_action {
+#     type             = "forward"
+#     target_group_arn = aws_lb_target_group.front_end.arn
+#   }
+# }
+
+resource "aws_lb_target_group" "traefik" {
+  provider = aws.region_master
+  #name     = "tf-example-lb-tg"
+  port     = 80
+  protocol = "HTTP"
+  vpc_id   = aws_vpc.test.id
+}
+
+
+resource "aws_lb_listener" "traefik" {
+  provider          = aws.region_master
+  load_balancer_arn = aws_lb.traefik.arn
+  port              = "80"
+  protocol          = "HTTP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.traefik.arn
+  }
+}
+
+resource "aws_lb_target_group_attachment" "traefik" {
+  provider = aws.region_master
+  count    = 2
+
+  target_group_arn = aws_lb_target_group.traefik.arn
+  target_id        = aws_instance.traefik[count.index].id
+  port             = 80
+}

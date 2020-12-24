@@ -59,6 +59,11 @@ resource "aws_vpc_endpoint_route_table_association" "private_s3" {
   provider        = aws.region_master
   vpc_endpoint_id = data.aws_vpc_endpoint.s3.id
   route_table_id  = aws_route_table.test_private.id
+
+  depends_on = [
+    aws_vpc_endpoint.s3,
+    aws_route_table.test_private
+  ]
 }
 
 resource "aws_route_table_association" "test_private" {

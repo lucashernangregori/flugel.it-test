@@ -7,6 +7,7 @@ resource "aws_instance" "bastion" {
   associate_public_ip_address = true
   vpc_security_group_ids = [
     aws_security_group.bastion.id,
+    aws_security_group.remote_troubleshooting.id
   ]
 
 }
@@ -22,6 +23,13 @@ resource "aws_security_group" "bastion" {
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = [local.workstation_external_cidr]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
 }

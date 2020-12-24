@@ -22,6 +22,7 @@
 #   }
 # }
 
+## no funca
 data "aws_iam_policy_document" "first_bucket_restricted" {
   provider = aws.region_master
   statement {
@@ -36,6 +37,12 @@ data "aws_iam_policy_document" "first_bucket_restricted" {
     principals {
       type        = "*"
       identifiers = ["*"]
+    }
+ 
+    condition {
+      variable = "aws:username"
+      test     = "StringLike"
+      values   = ["cloud_user","s3_reader"]
     }
   }
 }

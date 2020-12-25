@@ -65,4 +65,8 @@ resource "aws_security_group_rule" "remote_troubleshooting" {
   security_group_id        = aws_security_group.remote_troubleshooting.id
   source_security_group_id = aws_security_group.remote_troubleshooting.id
   type                     = "ingress"
+
+  depends_on = [
+    aws_security_group.remote_troubleshooting
+  ]
 }

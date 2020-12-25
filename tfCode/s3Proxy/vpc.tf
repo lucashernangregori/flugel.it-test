@@ -15,12 +15,6 @@ resource "aws_vpc_endpoint" "s3" {
   service_name = "com.amazonaws.us-east-1.s3"
 }
 
-# resource "aws_vpc_endpoint" "s3" {
-#     provider = aws.region_master
-#   vpc_id       = aws_vpc.test.id
-#   service_name = data.aws_vpc_endpoint_service.s3.service_name
-# }
-
 resource "aws_subnet" "test_public" {
   provider = aws.region_master
   count    = length(var.public_subnets)
@@ -40,27 +34,20 @@ resource "aws_route_table" "test_public" {
     cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.test_vpc_igw.id
   }
-
-
 }
 
 resource "aws_route_table" "test_private" {
   provider = aws.region_master
   vpc_id   = aws_vpc.test.id
 
-  # route {
-  #   cidr_block      = "0.0.0.0/0"
-  #   gateway_id = aws_vpc_endpoint.s3.id
-  # }
   depends_on = [
     aws_vpc_endpoint.s3
   ]
-
 }
 
 resource "aws_vpc_endpoint_route_table_association" "private_s3" {
   provider        = aws.region_master
-  vpc_endpoint_id = data.aws_vpc_endpoint.s3.id
+  vpc_endpoint_id = aws_vpc_endpoint.s3.id
   route_table_id  = aws_route_table.test_private.id
 
   depends_on = [

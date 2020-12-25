@@ -27,7 +27,7 @@ resource "aws_s3_bucket_public_access_block" "first_bucket" {
   restrict_public_buckets = true
 }
 
-//resource created to conform super linter false positive: https://github.com/accurics/terrascan/issues/359
+# //resource created to conform super linter false positive: https://github.com/accurics/terrascan/issues/359
 resource "aws_s3_bucket_policy" "first_bucket" {
   provider   = aws.region_master
   bucket     = aws_s3_bucket.first_bucket.id

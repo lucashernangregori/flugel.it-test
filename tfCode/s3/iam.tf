@@ -35,14 +35,36 @@ data "aws_iam_policy_document" "first_bucket_restricted" {
     ]
 
     principals {
-      type        = "*"
-      identifiers = ["*"]
+      type        = "AWS"
+      identifiers = [aws_iam_role.arn]
     }
- 
-    condition {
-      variable = "aws:username"
-      test     = "StringLike"
-      values   = ["cloud_user","s3_reader"]
-    }
+  }
+
+  depends_on = [  aws_iam_role.s3_reader ]
+}
+
+resource "aws_iam_role" "s3_reader" {
+  provider = aws.region_master
+
+  name = "s3_reader"
+
+  assume_role_policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Action": "sts:AssumeRole",
+            "Principal": {
+               "Service": "ec2.amazonaws.com"
+            },
+            "Effect": "Allow",
+            "Sid": ""
+        }
+    ]
+}
+EOF
+
+  tags = {
+    tf_import = "s3_reader"
   }
 }

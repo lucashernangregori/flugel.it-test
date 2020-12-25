@@ -36,6 +36,13 @@ data "aws_vpc_endpoint" "s3" {
   service_name = "com.amazonaws.us-east-1.s3"
 }
 
+data "aws_iam_role" "s3_reader" {
+  provider = aws.region_master
+  tags = {
+    tf_import = "s3_reader"
+  }
+}
+
 locals {
   workstation_external_cidr = "${chomp(data.http.workstation_external_ip.body)}/32"
 }

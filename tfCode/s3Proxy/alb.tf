@@ -3,29 +3,8 @@ resource "aws_lb" "traefik" {
   name               = "traefic-to-s3"
   internal           = false
   load_balancer_type = "application"
-  security_groups    = [aws_security_group.lb_sg.id]
+  security_groups    = [aws_security_group.lb_sg.id, aws_security_group.lb_internal_traffic.id]
   subnets            = aws_subnet.test_private.*.id
-}
-
-resource "aws_security_group" "lb_sg" {
-  provider = aws.region_master
-  name     = "lb_sg"
-
-  vpc_id = aws_vpc.test.id
-
-  ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "TCP"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "TCP"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
 }
 
 resource "aws_lb_target_group" "traefik" {
@@ -39,7 +18,6 @@ resource "aws_lb_target_group" "traefik" {
     create_before_destroy = true
   }
 }
-
 
 resource "aws_lb_listener" "traefik" {
   provider          = aws.region_master
@@ -67,5 +45,55 @@ resource "aws_lb_target_group_attachment" "traefik" {
 
   depends_on = [
     aws_lb_target_group.traefik
+  ]
+}
+
+resource "aws_security_group" "lb_sg" {
+  provider = aws.region_master
+  name     = "lb_sg"
+
+  vpc_id = aws_vpc.test.id
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "TCP"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 65535
+    protocol    = "TCP"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_security_group" "lb_internal_traffic" {
+  provider = aws.region_master
+  name     = "lb_internal_traffic"
+
+  vpc_id = aws_vpc.test.id
+
+  egress {
+    from_port   = 0
+    to_port     = 65535
+    protocol    = "TCP"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_security_group_rule" "lb_internal_traffic" {
+  provider                 = aws.region_master
+  description              = "Allow machines with the same sg to comunicate to each other"
+  from_port                = 80
+  to_port                  = 80
+  protocol                 = "tcp"
+  security_group_id        = aws_security_group.lb_internal_traffic.id
+  source_security_group_id = aws_security_group.lb_internal_traffic.id
+  type                     = "ingress"
+
+  depends_on = [
+    aws_security_group.lb_internal_traffic
   ]
 }

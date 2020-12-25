@@ -72,9 +72,6 @@ resource "aws_route_table_association" "test_public" {
   route_table_id = aws_route_table.test_public.id
 }
 
-
-
-
 resource "aws_subnet" "test_private" {
   provider = aws.region_master
   count    = length(var.private_subnets)
@@ -84,20 +81,23 @@ resource "aws_subnet" "test_private" {
   vpc_id            = aws_vpc.test.id
 }
 
-# resource "aws_eip" "nat" {
-#   provider = aws.region_master
-#   vpc      = true
-# }
+resource "aws_eip" "nat" {
+  provider = aws.region_master
+  vpc      = true
+}
 
-# resource "aws_nat_gateway" "nat_gw" {
-#   provider = aws.region_master
-#   count    = 1
+resource "aws_nat_gateway" "nat_gw" {
+  provider = aws.region_master
+  count    = 1
 
-#   allocation_id = aws_eip.nat.id
-#   subnet_id     = aws_subnet.test_public.*.id[count.index]
-#   depends_on    = [aws_internet_gateway.test_vpc_igw]
+  allocation_id = aws_eip.nat.id
+  subnet_id     = aws_subnet.test_public.*.id[count.index]
+  depends_on    = [aws_internet_gateway.test_vpc_igw]
+}
 
-#   tags = {
-#     Name = "gw NAT"
-#   }
-#}
+resource "aws_route" "nat_gw" {
+  provider               = aws.region_master
+  route_table_id         = aws_route_table.test_private.id
+  destination_cidr_block = "0.0.0.0/0"
+  nat_gateway_id         = aws_nat_gateway.nat_gw[0].id
+}

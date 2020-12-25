@@ -36,11 +36,11 @@ data "aws_iam_policy_document" "first_bucket_restricted" {
 
     principals {
       type        = "AWS"
-      identifiers = [aws_iam_role.arn]
+      identifiers = [aws_iam_role.s3_reader.arn]
     }
   }
 
-  depends_on = [  aws_iam_role.s3_reader ]
+  depends_on = [aws_iam_role.s3_reader]
 }
 
 resource "aws_iam_role" "s3_reader" {

@@ -38,8 +38,9 @@ data "aws_vpc_endpoint" "s3" {
 
 data "aws_iam_role" "s3_reader" {
   provider = aws.region_master
+  name = "s3_reader"
   tags = {
-    tf_import = "s3_reader"
+    "tf_import" = "s3_reader"
   }
 }
 

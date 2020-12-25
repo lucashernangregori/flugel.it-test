@@ -52,7 +52,7 @@ resource "aws_route_table" "test_private" {
   #   cidr_block      = "0.0.0.0/0"
   #   gateway_id = aws_vpc_endpoint.s3.id
   # }
-   depends_on = [
+  depends_on = [
     aws_vpc_endpoint.s3
   ]
 

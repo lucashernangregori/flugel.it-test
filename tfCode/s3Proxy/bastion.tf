@@ -6,8 +6,8 @@ resource "aws_instance" "bastion" {
   subnet_id                   = aws_subnet.test_public[0].id
   associate_public_ip_address = true
 
-  iam_instance_profile        = aws_iam_instance_profile.traefik.id
-  
+  iam_instance_profile = aws_iam_instance_profile.traefik.id
+
   vpc_security_group_ids = [
     aws_security_group.bastion.id,
     aws_security_group.remote_troubleshooting.id

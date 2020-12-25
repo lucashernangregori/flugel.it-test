@@ -22,3 +22,8 @@ variable "private_subnets" {
   type    = list(string)
   default = ["10.0.10.0/24", "10.0.11.0/24"]
 }
+
+variable "traefik_instances_count" {
+  type    = number
+  default = 1
+}

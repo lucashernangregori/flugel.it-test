@@ -4,7 +4,7 @@ resource "aws_lb" "traefik" {
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.lb_sg.id, aws_security_group.lb_internal_traffic.id]
-  subnets            = aws_subnet.test_private.*.id
+  subnets            = data.aws_subnet.test_private.*.id
 }
 
 resource "aws_lb_target_group" "traefik" {
@@ -12,7 +12,7 @@ resource "aws_lb_target_group" "traefik" {
   name     = "traefik"
   port     = 80
   protocol = "HTTP"
-  vpc_id   = aws_vpc.test.id
+  vpc_id   = data.aws_vpc.test.id
 
   lifecycle {
     create_before_destroy = true
@@ -37,10 +37,12 @@ resource "aws_lb_listener" "traefik" {
 
 resource "aws_lb_target_group_attachment" "traefik" {
   provider = aws.region_master
-  count    = 2
+  #count    = var.traefik_instances_count
+  count = 1
 
   target_group_arn = aws_lb_target_group.traefik.arn
-  target_id        = aws_instance.traefik[count.index].id
+  #target_id        = data.aws_instance.traefik[count.index].id
+  target_id        = data.aws_instance.traefik.id
   port             = 80
 
   depends_on = [
@@ -52,7 +54,7 @@ resource "aws_security_group" "lb_sg" {
   provider = aws.region_master
   name     = "lb_sg"
 
-  vpc_id = aws_vpc.test.id
+  vpc_id = data.aws_vpc.test.id
 
   ingress {
     from_port   = 80
@@ -73,7 +75,7 @@ resource "aws_security_group" "lb_internal_traffic" {
   provider = aws.region_master
   name     = "lb_internal_traffic"
 
-  vpc_id = aws_vpc.test.id
+  vpc_id = data.aws_vpc.test.id
 
   egress {
     from_port   = 0
@@ -96,4 +98,10 @@ resource "aws_security_group_rule" "lb_internal_traffic" {
   depends_on = [
     aws_security_group.lb_internal_traffic
   ]
+}
+
+resource "aws_network_interface_sg_attachment" "sg_attachment" {
+  provider             = aws.region_master
+  security_group_id    = aws_security_group.lb_internal_traffic.id
+  network_interface_id = data.aws_instance.traefik.network_interface_id
 }

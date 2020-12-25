@@ -6,7 +6,7 @@ resource "aws_key_pair" "lucas" {
 
 resource "aws_instance" "traefik" {
   provider = aws.region_master
-  count    = 1
+  count    = var.traefik_instances_count
 
   ami                         = data.aws_ami.ubuntu.id
   instance_type               = "t3.medium"
@@ -17,9 +17,13 @@ resource "aws_instance" "traefik" {
 
   vpc_security_group_ids = [
     aws_security_group.traefik.id,
-    aws_security_group.lb_internal_traffic.id,
+    #   aws_security_group.lb_internal_traffic.id,
     aws_security_group.remote_troubleshooting.id
   ]
+
+  tags = {
+    "Name" = "traefik"
+  }
 }
 
 resource "aws_security_group" "traefik" {

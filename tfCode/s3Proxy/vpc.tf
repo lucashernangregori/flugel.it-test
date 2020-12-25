@@ -2,6 +2,10 @@ resource "aws_vpc" "test" {
   provider             = aws.region_master
   cidr_block           = var.vpc_cidr
   enable_dns_hostnames = true
+
+  tags = {
+    "Name" = "test"
+  }
 }
 
 resource "aws_internet_gateway" "test_vpc_igw" {
@@ -79,6 +83,11 @@ resource "aws_subnet" "test_private" {
   availability_zone = data.aws_availability_zones.available.names[count.index]
   cidr_block        = var.private_subnets[count.index]
   vpc_id            = aws_vpc.test.id
+
+  tags = {
+    "Name" = "test_private",
+    "Count" = count.index
+  }
 }
 
 resource "aws_eip" "nat" {

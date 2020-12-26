@@ -28,6 +28,11 @@ resource "aws_subnet" "test_public" {
   vpc_id            = aws_vpc.test.id
 
   map_public_ip_on_launch = true
+
+  tags = {
+    "Name"  = "test_public",
+    "Count" = count.index
+  }
 }
 
 resource "aws_route_table" "test_public" {
@@ -85,7 +90,7 @@ resource "aws_subnet" "test_private" {
   vpc_id            = aws_vpc.test.id
 
   tags = {
-    "Name" = "test_private",
+    "Name"  = "test_private",
     "Count" = count.index
   }
 }

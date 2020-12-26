@@ -4,7 +4,8 @@ resource "aws_lb" "traefik" {
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.lb_sg.id, aws_security_group.lb_internal_traffic.id]
-  subnets            = data.aws_subnet.test_private.*.id
+  #subnets            = data.aws_subnet.test_private.*.id
+  subnets            = [data.aws_subnet.test_public_0.id,data.aws_subnet.test_public_1.id]
 }
 
 resource "aws_lb_target_group" "traefik" {

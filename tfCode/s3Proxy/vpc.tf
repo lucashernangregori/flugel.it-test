@@ -97,20 +97,22 @@ resource "aws_subnet" "test_private" {
 
 resource "aws_eip" "nat" {
   provider = aws.region_master
+  count    = var.enable_nat ? 1 : 0
   vpc      = true
 }
 
 resource "aws_nat_gateway" "nat_gw" {
   provider = aws.region_master
-  count    = 1
+  count    = var.enable_nat ? 1 : 0
 
-  allocation_id = aws_eip.nat.id
+  allocation_id = aws_eip.nat[0].id
   subnet_id     = aws_subnet.test_public.*.id[count.index]
   depends_on    = [aws_internet_gateway.test_vpc_igw]
 }
 
 resource "aws_route" "nat_gw" {
   provider               = aws.region_master
+  count                  = var.enable_nat ? 1 : 0
   route_table_id         = aws_route_table.test_private.id
   destination_cidr_block = "0.0.0.0/0"
   nat_gateway_id         = aws_nat_gateway.nat_gw[0].id

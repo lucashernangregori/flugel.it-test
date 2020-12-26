@@ -5,7 +5,7 @@ resource "aws_lb" "traefik" {
   load_balancer_type = "application"
   security_groups    = [aws_security_group.lb_sg.id, aws_security_group.lb_internal_traffic.id]
   #subnets            = data.aws_subnet.test_private.*.id
-  subnets            = [data.aws_subnet.test_public_0.id,data.aws_subnet.test_public_1.id]
+  subnets = [data.aws_subnet.test_public_0.id, data.aws_subnet.test_public_1.id]
 }
 
 resource "aws_lb_target_group" "traefik" {
@@ -43,8 +43,8 @@ resource "aws_lb_target_group_attachment" "traefik" {
 
   target_group_arn = aws_lb_target_group.traefik.arn
   #target_id        = data.aws_instance.traefik[count.index].id
-  target_id        = data.aws_instance.traefik.id
-  port             = 80
+  target_id = data.aws_instance.traefik.id
+  port      = 80
 
   depends_on = [
     aws_lb_target_group.traefik
@@ -78,27 +78,20 @@ resource "aws_security_group" "lb_internal_traffic" {
 
   vpc_id = data.aws_vpc.test.id
 
+  ingress {
+    description = "Allow machines with the same sg to comunicate to each other"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "TCP"
+    self        = true
+  }
+
   egress {
     from_port   = 0
     to_port     = 65535
     protocol    = "TCP"
     cidr_blocks = ["0.0.0.0/0"]
   }
-}
-
-resource "aws_security_group_rule" "lb_internal_traffic" {
-  provider                 = aws.region_master
-  description              = "Allow machines with the same sg to comunicate to each other"
-  from_port                = 80
-  to_port                  = 80
-  protocol                 = "tcp"
-  security_group_id        = aws_security_group.lb_internal_traffic.id
-  source_security_group_id = aws_security_group.lb_internal_traffic.id
-  type                     = "ingress"
-
-  depends_on = [
-    aws_security_group.lb_internal_traffic
-  ]
 }
 
 resource "aws_network_interface_sg_attachment" "sg_attachment" {

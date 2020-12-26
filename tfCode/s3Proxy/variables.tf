@@ -27,3 +27,9 @@ variable "traefik_instances_count" {
   type    = number
   default = 1
 }
+
+variable "enable_nat" {
+  description = "If set to true, enable auto nat gateway on private subnets"
+  type        = bool
+  default     = true
+}

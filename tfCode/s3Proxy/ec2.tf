@@ -47,6 +47,13 @@ resource "aws_security_group" "traefik" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "HTTP"
+    security_group_id = module.load_balancer.security_group_id
+  }
 }
 
 resource "aws_iam_instance_profile" "traefik" {

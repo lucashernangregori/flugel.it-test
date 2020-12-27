@@ -29,3 +29,18 @@ module "load_balancer" {
   ]
   internal = false
 }
+
+module "alb_target_group" {
+  source = "./modules/albTargetGroup"
+
+  providers = {
+    aws = aws.region_master
+  }
+
+  target_group_name    = "traefik-tg"
+  port                 = 80
+  vpc_id               = aws_vpc.test.id
+
+  lb_arn = module.load_balancer.alb_arn
+  instance_ids = aws_instance.traefik[*].id
+}

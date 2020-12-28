@@ -5,6 +5,12 @@ terraform {
   }
 }
 
+provider "aws" {
+  profile = var.profile
+  region  = var.region_master
+  alias   = "region_master"
+}
+
 resource "aws_s3_bucket" "first_bucket" {
   provider = aws.region_master
   bucket   = var.bucket_name

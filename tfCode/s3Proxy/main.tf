@@ -30,7 +30,7 @@ module "bastion_host" {
     aws = aws.region_master
   }
 
-  subnet_id = aws_subnet.test_public[0].id
+  subnet_id =  module.networking.public_subnets[0]
   vpc_id                         = module.networking.vpc_id
   key_pair_name = aws_key_pair.lucas.key_name
   ami_id = data.aws_ami.ubuntu.id
@@ -50,8 +50,7 @@ module "load_balancer" {
   allow_inbound_from_cidr_blocks = ["0.0.0.0/0"]
   http_listener_ports            = [80]
   subnet_ids = [
-    aws_subnet.test_public[0].id,
-    aws_subnet.test_public[1].id
+    module.networking.public_subnets
   ]
   internal = false
 }

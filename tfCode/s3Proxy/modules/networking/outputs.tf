@@ -1,5 +1,5 @@
 output "vpc_id" {
-  value = aws_vpc.test.vpc
+  value = aws_vpc.test.id
 }
 
 output "public_subnets" {
@@ -8,4 +8,4 @@ output "public_subnets" {
 
 output "private_subnets" {
     value = [aws_subnet.test_private.*.id]
-} 
+}

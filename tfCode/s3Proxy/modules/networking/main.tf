@@ -1,5 +1,8 @@
+terraform {
+  required_version = ">= 0.14"
+}
+
 resource "aws_vpc" "test" {
-  provider             = aws.region_master
   cidr_block           = var.vpc_cidr
   enable_dns_hostnames = true
 
@@ -9,18 +12,15 @@ resource "aws_vpc" "test" {
 }
 
 resource "aws_internet_gateway" "test_vpc_igw" {
-  provider = aws.region_master
   vpc_id   = aws_vpc.test.id
 }
 
 resource "aws_vpc_endpoint" "s3" {
-  provider     = aws.region_master
   vpc_id       = aws_vpc.test.id
   service_name = "com.amazonaws.us-east-1.s3"
 }
 
 resource "aws_subnet" "test_public" {
-  provider = aws.region_master
   count    = length(var.public_subnets)
 
   availability_zone = data.aws_availability_zones.available.names[count.index]
@@ -36,7 +36,6 @@ resource "aws_subnet" "test_public" {
 }
 
 resource "aws_route_table" "test_public" {
-  provider = aws.region_master
   vpc_id   = aws_vpc.test.id
 
   route {
@@ -46,7 +45,6 @@ resource "aws_route_table" "test_public" {
 }
 
 resource "aws_route_table" "test_private" {
-  provider = aws.region_master
   vpc_id   = aws_vpc.test.id
 
   depends_on = [
@@ -55,7 +53,6 @@ resource "aws_route_table" "test_private" {
 }
 
 resource "aws_vpc_endpoint_route_table_association" "private_s3" {
-  provider        = aws.region_master
   vpc_endpoint_id = aws_vpc_endpoint.s3.id
   route_table_id  = aws_route_table.test_private.id
 
@@ -68,7 +65,6 @@ resource "aws_vpc_endpoint_route_table_association" "private_s3" {
 resource "aws_route_table_association" "test_private" {
   count = length(var.private_subnets)
 
-  provider       = aws.region_master
   subnet_id      = element(aws_subnet.test_private.*.id, count.index)
   route_table_id = aws_route_table.test_private.id
 }
@@ -76,13 +72,11 @@ resource "aws_route_table_association" "test_private" {
 resource "aws_route_table_association" "test_public" {
   count = length(var.public_subnets)
 
-  provider       = aws.region_master
   subnet_id      = element(aws_subnet.test_public.*.id, count.index)
   route_table_id = aws_route_table.test_public.id
 }
 
 resource "aws_subnet" "test_private" {
-  provider = aws.region_master
   count    = length(var.private_subnets)
 
   availability_zone = data.aws_availability_zones.available.names[count.index]
@@ -96,13 +90,11 @@ resource "aws_subnet" "test_private" {
 }
 
 resource "aws_eip" "nat" {
-  provider = aws.region_master
   count    = var.enable_nat ? 1 : 0
   vpc      = true
 }
 
 resource "aws_nat_gateway" "nat_gw" {
-  provider = aws.region_master
   count    = var.enable_nat ? 1 : 0
 
   allocation_id = aws_eip.nat[0].id
@@ -111,7 +103,6 @@ resource "aws_nat_gateway" "nat_gw" {
 }
 
 resource "aws_route" "nat_gw" {
-  provider               = aws.region_master
   count                  = var.enable_nat ? 1 : 0
   route_table_id         = aws_route_table.test_private.id
   destination_cidr_block = "0.0.0.0/0"

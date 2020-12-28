@@ -39,7 +39,7 @@ resource "aws_security_group" "traefik" {
   provider = aws.region_master
   name     = "traefik"
 
-  vpc_id = aws_vpc.test.id
+  vpc_id = module.networking.vpc_id
 
   egress {
     from_port   = 0

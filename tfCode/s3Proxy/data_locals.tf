@@ -20,10 +20,6 @@ data "http" "workstation_external_ip" {
   url      = "http://ipv4.icanhazip.com"
 }
 
-data "aws_availability_zones" "available" {
-  provider = aws.region_master
-}
-
 data "aws_iam_role" "s3_reader" {
   provider = aws.region_master
   name     = var.s3_iam_role

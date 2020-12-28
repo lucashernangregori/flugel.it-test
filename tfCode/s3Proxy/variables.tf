@@ -33,3 +33,8 @@ variable "enable_nat" {
   type        = bool
   default     = true
 }
+
+variable "s3_iam_role" {
+  type = string
+  default = "s3_reader"
+}

@@ -26,7 +26,7 @@ data "aws_availability_zones" "available" {
 
 data "aws_iam_role" "s3_reader" {
   provider = aws.region_master
-  name     = "s3_reader"
+  name     = var.s3_iam_role
 }
 
 locals {

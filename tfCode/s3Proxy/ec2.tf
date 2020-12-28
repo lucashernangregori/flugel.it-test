@@ -18,7 +18,7 @@ resource "aws_instance" "traefik" {
   vpc_security_group_ids = [
     aws_security_group.traefik.id,
     #   aws_security_group.lb_internal_traffic.id,
-    aws_security_group.remote_troubleshooting.id
+    module.bastion_host.troubleshooting_sg_id
   ]
 
   user_data = <<EOF
@@ -49,10 +49,10 @@ resource "aws_security_group" "traefik" {
   }
 
   ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "HTTP"
-    security_group_id = module.load_balancer.security_group_id
+    from_port         = 80
+    to_port           = 80
+    protocol          = "TCP"
+    security_groups = [module.load_balancer.security_group_id]
   }
 }
 

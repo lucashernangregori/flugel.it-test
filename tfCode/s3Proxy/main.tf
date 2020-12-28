@@ -11,6 +11,20 @@ provider "aws" {
   alias   = "region_master"
 }
 
+module "bastion_host" {
+  source = "./modules/bastionHost"
+
+  providers = {
+    aws = aws.region_master
+  }
+
+  subnet_id = aws_subnet.test_public[0].id
+  vpc_id                         = aws_vpc.test.id
+  key_pair_name = aws_key_pair.lucas.key_name
+  ami_id = data.aws_ami.ubuntu.id
+  workstation_external_cidr = local.workstation_external_cidr
+}
+
 module "load_balancer" {
   source = "./modules/alb"
 
@@ -37,10 +51,10 @@ module "alb_target_group" {
     aws = aws.region_master
   }
 
-  target_group_name    = "traefik-tg"
-  port                 = 80
-  vpc_id               = aws_vpc.test.id
+  target_group_name = "traefik-tg"
+  port              = 80
+  vpc_id            = aws_vpc.test.id
 
-  lb_arn = module.load_balancer.alb_arn
+  lb_arn       = module.load_balancer.alb_arn
   instance_ids = aws_instance.traefik[*].id
 }

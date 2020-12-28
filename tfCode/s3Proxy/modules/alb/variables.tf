@@ -1,3 +1,4 @@
+# REQUIRED PARAMETERS
 variable "name" {
   type = string
 }
@@ -24,6 +25,7 @@ variable "allow_inbound_from_cidr_blocks" {
   type        = list(string)
 }
 
+# OPTIONAL PARAMETERS
 variable "allow_inbound_from_security_groups" {
   description = "A list of Security Group IDs from which the load balancer will allow incoming HTTP/HTTPS requests. Any time you change this value, make sure to update var.allow_inbound_from_security_groups too!"
   type        = list(string)

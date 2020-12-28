@@ -1,6 +1,6 @@
 resource "aws_instance" "bastion" {
   ami                         = var.ami_id
-  instance_type               =  var.instance_type
+  instance_type               = var.instance_type
   key_name                    = var.key_pair_name
   subnet_id                   = var.subnet_id
   associate_public_ip_address = true
@@ -14,7 +14,7 @@ resource "aws_instance" "bastion" {
 }
 
 resource "aws_security_group" "bastion" {
-  name     = "bastion"
+  name = "bastion"
 
   vpc_id = var.vpc_id
 
@@ -34,7 +34,7 @@ resource "aws_security_group" "bastion" {
 }
 
 resource "aws_security_group" "remote_troubleshooting" {
-  name     = "troubleshooting"
+  name = "troubleshooting"
 
   vpc_id = var.vpc_id
 
@@ -54,13 +54,13 @@ resource "aws_security_group" "remote_troubleshooting" {
 }
 
 resource "aws_security_group_rule" "remote_troubleshooting" {
-  description              = "Allow machines with the same sg to comunicate to each other"
-  from_port                = 0
-  to_port                  = 0
-  protocol                 = "-1"
-  security_group_id        = aws_security_group.remote_troubleshooting.id
-  self = true
-  type                     = "ingress"
+  description       = "Allow machines with the same sg to comunicate to each other"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  security_group_id = aws_security_group.remote_troubleshooting.id
+  self              = true
+  type              = "ingress"
 
   depends_on = [
     aws_security_group.remote_troubleshooting

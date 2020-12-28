@@ -49,9 +49,9 @@ resource "aws_security_group" "traefik" {
   }
 
   ingress {
-    from_port         = 80
-    to_port           = 80
-    protocol          = "TCP"
+    from_port       = 80
+    to_port         = 80
+    protocol        = "TCP"
     security_groups = [module.load_balancer.security_group_id]
   }
 }
@@ -59,5 +59,5 @@ resource "aws_security_group" "traefik" {
 resource "aws_iam_instance_profile" "traefik" {
   provider = aws.region_master
   name     = "traefik"
-  role     = data.aws_iam_role.s3_reader.name
+  role     = module.s3_bucket.iam_role_name
 }

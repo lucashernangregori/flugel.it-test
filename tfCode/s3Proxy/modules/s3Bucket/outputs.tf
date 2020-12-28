@@ -11,3 +11,7 @@ output "s3_test_files" {
 output "current_time" {
   value = local.current_time
 }
+
+output "iam_role_name" {
+  value = aws_iam_role.s3_reader.name
+}

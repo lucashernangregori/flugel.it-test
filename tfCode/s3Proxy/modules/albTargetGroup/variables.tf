@@ -16,11 +16,11 @@ variable "vpc_id" {
 }
 
 variable "lb_arn" {
-  type        = string
+  type = string
 }
 
 variable "instance_ids" {
-  type        = list(string)
+  type = list(string)
 }
 
 # OPTIONAL PARAMETERS

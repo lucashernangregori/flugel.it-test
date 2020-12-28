@@ -15,18 +15,18 @@ variable "ami_id" {
   type = string
 }
 
-variable "workstation_external_cidr"{
-    type = string
+variable "workstation_external_cidr" {
+  type = string
 }
 
 # OPTIONAL PARAMETERS
 variable "instance_role_id" {
-  type = string
+  type    = string
   default = ""
 }
 
 variable "instance_type" {
-  type = string
+  type    = string
   default = "t3.medium"
 }
 

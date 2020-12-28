@@ -12,7 +12,7 @@ resource "aws_vpc" "test" {
 }
 
 resource "aws_internet_gateway" "test_vpc_igw" {
-  vpc_id   = aws_vpc.test.id
+  vpc_id = aws_vpc.test.id
 }
 
 resource "aws_vpc_endpoint" "s3" {
@@ -21,7 +21,7 @@ resource "aws_vpc_endpoint" "s3" {
 }
 
 resource "aws_subnet" "test_public" {
-  count    = length(var.public_subnets)
+  count = length(var.public_subnets)
 
   availability_zone = data.aws_availability_zones.available.names[count.index]
   cidr_block        = var.public_subnets[count.index]
@@ -36,7 +36,7 @@ resource "aws_subnet" "test_public" {
 }
 
 resource "aws_route_table" "test_public" {
-  vpc_id   = aws_vpc.test.id
+  vpc_id = aws_vpc.test.id
 
   route {
     cidr_block = "0.0.0.0/0"
@@ -45,7 +45,7 @@ resource "aws_route_table" "test_public" {
 }
 
 resource "aws_route_table" "test_private" {
-  vpc_id   = aws_vpc.test.id
+  vpc_id = aws_vpc.test.id
 
   depends_on = [
     aws_vpc_endpoint.s3
@@ -77,7 +77,7 @@ resource "aws_route_table_association" "test_public" {
 }
 
 resource "aws_subnet" "test_private" {
-  count    = length(var.private_subnets)
+  count = length(var.private_subnets)
 
   availability_zone = data.aws_availability_zones.available.names[count.index]
   cidr_block        = var.private_subnets[count.index]
@@ -90,12 +90,12 @@ resource "aws_subnet" "test_private" {
 }
 
 resource "aws_eip" "nat" {
-  count    = var.enable_nat ? 1 : 0
-  vpc      = true
+  count = var.enable_nat ? 1 : 0
+  vpc   = true
 }
 
 resource "aws_nat_gateway" "nat_gw" {
-  count    = var.enable_nat ? 1 : 0
+  count = var.enable_nat ? 1 : 0
 
   allocation_id = aws_eip.nat[0].id
   subnet_id     = aws_subnet.test_public.*.id[count.index]

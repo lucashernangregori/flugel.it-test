@@ -1,5 +1,4 @@
 data "aws_iam_policy_document" "first_bucket_restricted" {
-  provider = aws.region_master
   statement {
     sid     = "DenyAllAccountAccessExceptForAdministratorsToS3Bucket"
     effect  = "Allow"
@@ -19,9 +18,7 @@ data "aws_iam_policy_document" "first_bucket_restricted" {
 }
 
 resource "aws_iam_role" "s3_reader" {
-  provider = aws.region_master
-
-  name = "s3_reader"
+  name = var.s3_iam_role
 
   assume_role_policy = <<EOF
 {

@@ -17,7 +17,6 @@ resource "aws_instance" "traefik" {
 
   vpc_security_group_ids = [
     aws_security_group.traefik.id,
-    #   aws_security_group.lb_internal_traffic.id,
     module.bastion_host.troubleshooting_sg_id
   ]
 
@@ -33,6 +32,8 @@ EOF
   tags = {
     "Name" = "traefik"
   }
+
+  depends_on = [module.networking]
 }
 
 resource "aws_security_group" "traefik" {

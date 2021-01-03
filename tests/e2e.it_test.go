@@ -87,45 +87,38 @@ func testURL(t *testing.T, endpoint string, path string, expectedStatus int, exp
 	url := fmt.Sprintf("%s://%s/%s", "http", endpoint, path)
 	actionDescription := fmt.Sprintf("Calling %s", url)
 	output := retry.DoWithRetry(t, actionDescription, 100, 30*time.Second, func() (string, error) {
-		body, err := func() (string, error) {
-			defer func() {
-				if r := recover(); r != nil {
-					fmt.Println("panic occured and cached: ", r)
-				}
-			}()
 
-			//we use our own client, because terratest http_utils panics on connection refused and stops test execution
-			client := http.Client{
-				// By default, Go does not impose a timeout, so an HTTP connection attempt can hang for a LONG time.
-				Timeout: 10 * time.Second,
-			}
+		//we use our own client, because terratest http_utils panics on connection refused and stops test execution
+		client := http.Client{
+			// By default, Go does not impose a timeout, so an HTTP connection attempt can hang for a LONG time.
+			Timeout: 10 * time.Second,
+		}
 
-			resp, err := client.Get(url)
-			if err != nil {
-				return "", fmt.Errorf("error on http get")
-			}
-			defer resp.Body.Close()
-			body, err2 := ioutil.ReadAll(resp.Body)
-			if err2 != nil {
-				return "", fmt.Errorf("error reading http body")
-			}
+		resp, err := client.Get(url)
+		if err != nil {
+			return "", fmt.Errorf("error on http get")
+		}
+		defer resp.Body.Close()
+		body, err2 := ioutil.ReadAll(resp.Body)
+		if err2 != nil {
+			return "", fmt.Errorf("error reading http body")
+		}
 
-			var response httpResponse
-			response.Body = strings.TrimSpace(string(body))
-			response.StatusCode = resp.StatusCode
-			if response.StatusCode == expectedStatus {
-				logger.Logf(t, "Got expected status code %d from URL %s", expectedStatus, url)
-				hits++
-			}
+		var response httpResponse
+		response.Body = strings.TrimSpace(string(body))
+		response.StatusCode = resp.StatusCode
+		if response.StatusCode == expectedStatus {
+			logger.Logf(t, "Got expected status code %d from URL %s", expectedStatus, url)
+			hits++
+		}
 
-			if hits >= minHits {
-				logger.Logf(t, "Got expected hits count: %d", minHits)
-				return response.Body, nil
-			}
+		if hits >= minHits {
+			logger.Logf(t, "Got expected hits count: %d", minHits)
+			return response.Body, nil
+		}
 
-			return "", fmt.Errorf("got status %d instead of the expected %d from %s", response.StatusCode, expectedStatus, url)
-		}()
-		return body, err
+		return "", fmt.Errorf("got status %d from %s. Expecting more status %d. Count %d/%d",
+			response.StatusCode, url, expectedStatus, hits, minHits)
 	})
 	assert.Contains(t, output, expectedBody, "Body should contain expected text")
 }

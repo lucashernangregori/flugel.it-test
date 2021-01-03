@@ -46,6 +46,7 @@ http:
       plugin:
         dev:
           bucketName: \""${var.bucket_name}"\"
+          endpoint: \"https://s3.${var.region_master}.amazonaws.com\"
 " > dynamic.yml
 cd ..
 sh build.sh

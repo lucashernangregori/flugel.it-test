@@ -1,13 +1,19 @@
 # flugel.it Challenge
 
 ### This repo contains TERRAFORM code which does the following actions:
+### *Creates a vpc, two public subnets and two private subnets on two different availability zones. Private subnets have a Nat gateway
 ### *Creates a S3 bucket with two files with the timestamp of the moment when the code is executed.
+### *Creates an s3 service endpoint to route requests without going out to the internet. The routing is on private subnets.
+### *Set up permission and roles to secure s3 bucket
 ### *Creates 2 ec2 instances on private subnets which clones a repo with aditional files (more details on its section) ### *Install docker and runs traefik v2.3.6 image with custom config and plugins
-### *Set up traefik to forward requests
+### *Set up traefik to forward requests using iam_role via plugin
+### *Creates an ALB with a target group pointing to the ec2 instances (internet facing ALB must be sitting on two public subnets with different AZs in order to be created)
+### *Optionally creates an ec2 instance to use as a bastion host form debugging purposes
 ### The S3 bucket is versioned and has a policy which only allows the user cloud_user to perform actions on it. This is coded that way in order to follow the best practices that Super-Linter recommends.
 
 ### The repo also contains tests for the TERRAFORM code. Those tests use the TERRATEST GO library in order to perform its magic.
 ### The tests checks for the existence of the bucket, the versioned settings, if it has a policy attached and finally the files and its contents to match the desired timestamp.
+### There is an additional E2E test, which creates all the infrastructure already detailed and makes a request to the ALB to get the s3 file trough traefik running on ec2 instances. In order to test that we are reaching the two instances, it checks for 6 status code 200. Then it checks for the file content to be correct.
 
 ### Finally the repo contains a file to use github automation: Github Actions which is described later in this readme.
 
@@ -98,5 +104,10 @@ The command to copy the files is specified in the testAction.yml file
 ```
 cp -R ~/go /home/runner/work/_temp/_github_home/go
 ```
+## Traefik Custom Plugin
+Sometimes we might think that attaching a role to an ec2 instance with the proper permissions is enough to make a successful s3 request to a protected bucket.
+But thats only the case when we do that request from aws cli or aws sdk.
+For every other petition, we need to sign that request. We can use the v2 or the v4 method. (https://docs.aws.amazon.com/AmazonS3/latest/dev/S3_Authentication2.html)
+For instance, if we issue a plain curl command we will get a 403 status code. We need to add the correct headers to get a 200 status code.
 
 Enjoy!

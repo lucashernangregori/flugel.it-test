@@ -34,6 +34,11 @@ variable "enable_nat" {
   default     = true
 }
 
+variable "s3_endpoint" {
+  type = string
+  default = "com.amazonaws.us-east-1.s3"
+}
+
 variable "s3_iam_role" {
   type    = string
   default = "s3_reader"

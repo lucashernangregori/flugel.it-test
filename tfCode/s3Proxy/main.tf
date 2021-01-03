@@ -33,6 +33,8 @@ module "networking" {
   vpc_cidr        = var.vpc_cidr
   public_subnets  = var.public_subnets
   private_subnets = var.private_subnets
+
+  s3_endpoint = var.s3_endpoint
 }
 
 module "bastion_host" {

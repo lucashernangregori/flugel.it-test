@@ -17,7 +17,7 @@ resource "aws_internet_gateway" "test_vpc_igw" {
 
 resource "aws_vpc_endpoint" "s3" {
   vpc_id       = aws_vpc.test.id
-  service_name = "com.amazonaws.us-east-1.s3"
+  service_name = var.s3_endpoint
 }
 
 resource "aws_subnet" "test_public" {

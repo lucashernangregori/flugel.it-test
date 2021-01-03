@@ -24,6 +24,29 @@ resource "aws_instance" "traefik" {
 cd /home/ubuntu 
 git clone https://github.com/lucashernangregori/traefik-plugindemo.git
 cd traefik-plugindemo
+echo "
+http:
+  routers:
+    my-router:
+      rule: \"Method(\`GET\`)\"
+      service: service-foo
+      entryPoints:
+        - web
+      middlewares:
+        - my-plugin
+
+  services:
+   service-foo:
+      loadBalancer:
+        servers:
+          - url: \"https://s3.${var.region_master}.amazonaws.com\"
+  
+  middlewares:
+    my-plugin:
+      plugin:
+        dev:
+          bucketName: \""${var.bucket_name}"\"
+" > dynamic.yml
 sh build.sh
 EOF
 

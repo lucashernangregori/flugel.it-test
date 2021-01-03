@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/gruntwork-io/terratest/modules/aws"
+	helper "github.com/gruntwork-io/terratest/modules/http-helper"
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	test_structure "github.com/gruntwork-io/terratest/modules/test-structure"
 
@@ -11,17 +12,16 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestE2E(t *testing.T) {
+func TestE2EDummy(t *testing.T) {
 	t.Parallel()
 
-	// Give the VPC and the subnets correct CIDRs
 	vpcCidr := "10.10.0.0/16"
 	privateSubnetCidr := []string{"10.10.1.0/24"}
 	publicSubnetCidr := []string{"10.10.2.0/24"}
 	awsRegion := "us-west-2"
 	s3Endpoint := "com.amazonaws." + awsRegion + ".s3"
 
-	_fixturesDir := test_structure.CopyTerraformFolderToTemp(t, "../tfCode/s3Proxy/modules/networking", ".")
+	_fixturesDir := test_structure.CopyTerraformFolderToTemp(t, "../tfCode/s3Proxy", ".")
 	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
 		TerraformDir: _fixturesDir,
 		BackendConfig: map[string]interface{}{
@@ -36,6 +36,7 @@ func TestE2E(t *testing.T) {
 			"private_subnets": privateSubnetCidr,
 			"enable_nat":      true,
 			"s3_endpoint":     s3Endpoint,
+			"region_master":   awsRegion,
 		},
 	})
 
@@ -58,5 +59,10 @@ func TestE2E(t *testing.T) {
 	for _, subnet := range privateSubnetID {
 		assert.False(t, aws.IsPublicSubnet(t, subnet, awsRegion))
 	}
-
+	terraformApplyCurrentTime := terraform.Output(t, terraformOptions, "current_time")
+	lbDNSName := terraform.Output(t, terraformOptions, "lb_dns_name")
+	url := lbDNSName + "/test1.txt"
+	statusCode, body := helper.HttpGet(t, url, nil)
+	assert.Equal(t, statusCode, 200)
+	assert.Equal(t, body, terraformApplyCurrentTime)
 }

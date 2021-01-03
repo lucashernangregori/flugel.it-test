@@ -29,6 +29,7 @@ func TestE2EDummy(t *testing.T) {
 	expectedBucketName := fmt.Sprintf("flugel.it.lucashernangregori.com.terratest-%s", strings.ToLower(random.UniqueId()))
 	s3IamRoleName := fmt.Sprintf("s3_reader-%s", strings.ToLower(random.UniqueId()))
 	traefikInstanceProfile := fmt.Sprintf("traefik-%s", strings.ToLower(random.UniqueId()))
+	traefikInstancesCount := 2
 
 	_fixturesDir := test_structure.CopyTerraformFolderToTemp(t, "../tfCode/s3Proxy", ".")
 	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
@@ -49,6 +50,7 @@ func TestE2EDummy(t *testing.T) {
 			"bucket_name":              expectedBucketName,
 			"s3_iam_role":              s3IamRoleName,
 			"traefik_instance_profile": traefikInstanceProfile,
+			"traefik_instances_count":  traefikInstancesCount,
 		},
 	})
 
@@ -74,33 +76,23 @@ func TestE2EDummy(t *testing.T) {
 	}
 	terraformApplyCurrentTime := terraform.Output(t, terraformOptions, "current_time")
 	lbDNSName := terraform.Output(t, terraformOptions, "lb_dns_name")
-	//url := "http://" + lbDNSName + "/test1.txt"
-	//statusCode, body := helper.HttpGet(t, url, nil)
 
-	// httpTestAction := func() (string, error){
-	// 	statusCode, body := helper.HttpGet(t, url, nil)
-	// 	if statusCode == expectedStatus {
-	// 		logger.Logf(t, "Got expected status code %d from URL %s", expectedStatus, url)
-	// 		return body, nil
-	// 	 }
-	// 	 return "", fmt.Errorf("got status %d instead of the expected %d from %s", statusCode, expectedStatus, url)
-	//   }
-	// }
-
-	//DoWithRetry(t,"wait until http server is ready",10, time.Duration(2 * time.Minute), httpTestAction)
-	// assert.Equal(t, statusCode, 200)
-	//assert.Equal(t, body, terraformApplyCurrentTime)
 	fileNames := terraform.OutputList(t, terraformOptions, "s3_test_files")
-	testURL(t, lbDNSName, fileNames[0], 200, terraformApplyCurrentTime)
+	testURL(t, lbDNSName, fileNames[0], 200, terraformApplyCurrentTime, 6)
 }
 
-func testURL(t *testing.T, endpoint string, path string, expectedStatus int, expectedBody string) {
+func testURL(t *testing.T, endpoint string, path string, expectedStatus int, expectedBody string, minHits int) {
+	hits := 0
 	url := fmt.Sprintf("%s://%s/%s", "http", endpoint, path)
 	actionDescription := fmt.Sprintf("Calling %s", url)
-	output := retry.DoWithRetry(t, actionDescription, 10, 2*time.Minute, func() (string, error) {
+	output := retry.DoWithRetry(t, actionDescription, 100, 30*time.Second, func() (string, error) {
 		statusCode, body := http_helper.HttpGet(t, url, nil)
 		if statusCode == expectedStatus {
 			logger.Logf(t, "Got expected status code %d from URL %s", expectedStatus, url)
+			hits++
+		}
+		if hits >= minHits {
+			logger.Logf(t, "Got expected hits count: %d", minHits)
 			return body, nil
 		}
 		return "", fmt.Errorf("got status %d instead of the expected %d from %s", statusCode, expectedStatus, url)

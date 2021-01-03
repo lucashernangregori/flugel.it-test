@@ -109,5 +109,16 @@ Sometimes we might think that attaching a role to an ec2 instance with the prope
 But thats only the case when we do that request from aws cli or aws sdk.
 For every other petition, we need to sign that request. We can use the v2 or the v4 method. (https://docs.aws.amazon.com/AmazonS3/latest/dev/S3_Authentication2.html)
 For instance, if we issue a plain curl command we will get a 403 status code. We need to add the correct headers to get a 200 status code.
+With traefik we must do the same. I doesn't have support out of the box. So I wrote a custom plugin to make requests work as intended.
+To use the plugin we need to get traefik pilot token (https://doc.traefik.io/traefik/plugins/)
+We use the plugin on dev mode, in order to not to publish to github and appear on pilot store. The dev mode has the limitation that only works for 30 minutes, then it shuts down the server. But this is enough for the MVP.
+We use traefik with two config files: one is static configuration, called traefik.yml and the other is dynamic configuration, called dynamic.yml.
+Static configuration can only be applied at startup, in that file we specify our token and our plugin path.
+In the dynamic configuration, we set the router, the services and the middleware (in our case, the plugin)
+All of these configurations are pulled from my github repo https://github.com/lucashernangregori/traefik-plugindemo on the ec2 instances boot via user_data.
+On that repo the plugin resides. Along with a docker file to copy the plugin to the image.
+There is a build.sh bash script that builds the image and runs the container.
+In the ec2 user_data we have a template for dynamic.yml in order to inject different bucket names and s3 regions for testing and flexibility purposes.
+
 
 Enjoy!

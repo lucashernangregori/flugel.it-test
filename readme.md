@@ -1,6 +1,9 @@
 # flugel.it Challenge
 
-### This repo contains TERRAFORM code which creates a S3 bucket with two files with the timestamp of the moment when the code is executed.
+### This repo contains TERRAFORM code which does the following actions:
+### *Creates a S3 bucket with two files with the timestamp of the moment when the code is executed.
+### *Creates 2 ec2 instances on private subnets which clones a repo with aditional files (more details on its section) ### *Install docker and runs traefik v2.3.6 image with custom config and plugins
+### *Set up traefik to forward requests
 ### The S3 bucket is versioned and has a policy which only allows the user cloud_user to perform actions on it. This is coded that way in order to follow the best practices that Super-Linter recommends.
 
 ### The repo also contains tests for the TERRAFORM code. Those tests use the TERRATEST GO library in order to perform its magic.

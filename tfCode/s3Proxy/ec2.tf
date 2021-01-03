@@ -23,7 +23,7 @@ resource "aws_instance" "traefik" {
 #!/bin/bash
 cd /home/ubuntu 
 git clone https://github.com/lucashernangregori/traefik-plugindemo.git
-cd traefik-plugindemo
+cd traefik-plugindemo/traefik
 echo "
 http:
   routers:
@@ -47,7 +47,9 @@ http:
         dev:
           bucketName: \""${var.bucket_name}"\"
 " > dynamic.yml
+cd ..
 sh build.sh
+echo end
 EOF
 
   tags = {
@@ -80,7 +82,7 @@ resource "aws_security_group" "traefik" {
 
 resource "aws_iam_instance_profile" "traefik" {
   provider = aws.region_master
-  name     = "traefik"
+  name     = var.traefik_instance_profile
   role     = module.s3_bucket.iam_role_name
 }
 

@@ -25,7 +25,7 @@ variable "private_subnets" {
 
 variable "traefik_instances_count" {
   type    = number
-  default = 1
+  default = 2
 }
 
 variable "enable_nat" {
@@ -35,13 +35,18 @@ variable "enable_nat" {
 }
 
 variable "s3_endpoint" {
-  type = string
+  type    = string
   default = "com.amazonaws.us-east-1.s3"
 }
 
 variable "s3_iam_role" {
   type    = string
   default = "s3_reader"
+}
+
+variable "traefik_instance_profile" {
+  type    = string
+  default = "traefik"
 }
 
 variable "bucket_name" {

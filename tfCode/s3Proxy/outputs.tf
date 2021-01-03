@@ -6,6 +6,10 @@ output "bastion_host_ip" {
   value = module.bastion_host.public_ip
 }
 
+output "s3_test_files" {
+  value = module.s3_bucket.s3_test_files
+}
+
 output "current_time" {
   value = module.s3_bucket.current_time
 }

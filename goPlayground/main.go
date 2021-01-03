@@ -39,11 +39,21 @@ func main() {
 	// 	EndpointResolver: endpoints.ResolverFunc(myCustomResolver),
 	// }))
 
-	requestParam := ec2.DescribeLocalGatewaysInput{
-		// DryRun: *false,
-	}
-	result := ec2.DescribeLocalGateways(requestParam)
-	for _, p := range result {
-		fmt.Println("Regions for", p.ID())
+	demo := &ec2.EC2{}
+
+	//max := int64(100)
+	dry := false
+	var req ec2.DescribeLocalGatewaysInput
+	req.DryRun = &dry
+	// requestParam := ec2.DescribeLocalGatewaysInput{
+	// 	// DryRun: *false,
+	// 	MaxResults: &max,
+	// }
+
+	//requestParamIndirection := &requestParam
+	result, _ := demo.DescribeLocalGateways(&req)
+
+	for _, p := range result.LocalGateways {
+		fmt.Println(p.LocalGatewayId)
 	}
 }

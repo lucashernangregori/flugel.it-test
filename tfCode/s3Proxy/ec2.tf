@@ -21,69 +21,8 @@ resource "aws_instance" "traefik" {
 
   user_data = <<EOF
 #!/bin/bash
-sudo apt-get update
-sudo apt-get install -y docker.io
-sudo mkdir /home/ubuntu/traefik/log -p
-instance_profile=`curl http://169.254.169.254/latest/meta-data/iam/security-credentials/`
-aws_access_key_id=`curl http://169.254.169.254/latest/meta-data/iam/security-credentials/\$${instance_profile} | grep AccessKeyId | cut -d':' -f2 | sed 's/[^0-9A-Z]*//g'`
-aws_secret_access_key=`curl http://169.254.169.254/latest/meta-data/iam/security-credentials/\$${instance_profile} | grep SecretAccessKey | cut -d':' -f2 | sed 's/[^0-9A-Za-z/+=]*//g'`
-token=`curl -s http://169.254.169.254/latest/meta-data/iam/security-credentials/\$${instance_profile} | sed -n '/Token/{p;}' | cut -f4 -d'"'`
-file="test1.txt"
-bucket="1flugel.it.lucashernangregori.com"
-date="`date +'%a, %d %b %Y %H:%M:%S %z'`"
-resource="/\$${bucket}/\$${file}"
-signature_string="GET\n\n\n\$${date}\nx-amz-security-token:\$${token}\n/\$${resource}"
-signature=`/bin/echo -en "\$${signature_string}" | openssl sha1 -hmac \$${aws_secret_access_key} -binary | base64`
-authorization="AWS \$${aws_access_key_id}:\$${signature}"
-curl -H "Date: \$${date}" -H "X-AMZ-Security-Token: \$${token}" -H "Authorization: \$${authorization}" "https://s3.amazonaws.com/\$${resource}"
-echo "
-providers:
-  file:
-    filename: \"/etc/traefik/dynamic_conf.yml\"
-    watch: true
-accessLog:
-  filePath: \"/var/log/traefik_access.log\"
-  format: json
-  fields:
-   defaultMode: keep
-   headers:
-    defaultMode: keep
-api:
-  insecure: true
-" > /home/ubuntu/traefik/traefik.yml
-echo "
-http:
-    routers:
-      router1:
-        service: s3Service
-        middlewares:
-          - \"authHeader\"
-        rule: \"Method(\`GET\`)\"
-
-    middlewares:
-      authHeader:
-        headers:
-          customRequestHeaders:
-            X-AMZ-Security-Token: \"\$${token}\"
-            Authorization: \"\$${authorization}\"
-            Date: \"\$${date}\"
-            Host: \"https://s3.amazonaws.com\"
-        addS3Prefix:
-          addPrefix:
-            prefix: \"/1flugel.it.lucashernangregori.com\"
-    services:
-      s3Service:
-        loadBalancer:
-          servers:
-            - url: \"https://s3.amazonaws.com\"
-" > /home/ubuntu/traefik/dynamic_conf.yml
-sudo docker run -d -p 8080:8080 -p 80:80 \
--v /home/ubuntu/traefik/traefik.yml:/etc/traefik/traefik.yml \
--v /home/ubuntu/traefik/dynamic_conf.yml:/etc/traefik/dynamic_conf.yml \
--v /home/ubuntu/traefik/log:/var/log \
--v /var/run/docker.sock:/var/run/docker.sock \
---name traefik \
-traefik:v2.3.6
+git clone https://github.com/lucashernangregori/traefik-plugindemo.git
+sh ./build.sh
 EOF
 
   tags = {

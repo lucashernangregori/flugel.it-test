@@ -47,6 +47,7 @@ module "bastion_host" {
   key_pair_name             = aws_key_pair.lucas.key_name
   ami_id                    = data.aws_ami.ubuntu.id
   workstation_external_cidr = local.workstation_external_cidr
+  instance_role_id          = aws_iam_instance_profile.traefik.id
 }
 
 module "load_balancer" {

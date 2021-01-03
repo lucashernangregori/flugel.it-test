@@ -41,7 +41,7 @@ variable "s3_iam_role" {
 
 variable "bucket_name" {
   type    = string
-  default = "flugel.it.lucashernangregori.com"
+  default = "1flugel.it.lucashernangregori.com"
 }
 
 variable "s3_test_files" {

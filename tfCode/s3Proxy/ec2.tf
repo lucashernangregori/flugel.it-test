@@ -21,8 +21,10 @@ resource "aws_instance" "traefik" {
 
   user_data = <<EOF
 #!/bin/bash
+cd /home/ubuntu 
 git clone https://github.com/lucashernangregori/traefik-plugindemo.git
-sh ./build.sh
+cd traefik-plugindemo
+sh build.sh
 EOF
 
   tags = {

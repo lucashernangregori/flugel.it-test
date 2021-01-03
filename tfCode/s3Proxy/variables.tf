@@ -58,3 +58,13 @@ variable "s3_test_files" {
   type    = list(string)
   default = ["test1.txt", "test2.txt"]
 }
+
+variable "flow_log_iam_role" {
+  type    = string
+  default = "flow_log"
+}
+
+variable "flow_log_iam_role_policy" {
+  type    = string
+  default = "allow_logs"
+}

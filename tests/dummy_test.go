@@ -32,7 +32,7 @@ func testURLdummy(t *testing.T, endpoint string, path string, expectedStatus int
 	actionDescription := fmt.Sprintf("Calling %s", url)
 	output := retry.DoWithRetry(t, actionDescription, 100, 30*time.Second, func() (string, error) {
 
-		//we use our own client, because terratest http_utils panics on connection refused and stops test execution
+		// we use our own client, because terratest http_utils panics on connection refused and stops test execution
 		client := http.Client{
 			// By default, Go does not impose a timeout, so an HTTP connection attempt can hang for a LONG time.
 			Timeout: 10 * time.Second,
@@ -83,7 +83,10 @@ func makeHTTPreq(t *testing.T, url string) httpResponseDummy {
 		logger.Logf(t, "error on http get")
 	}
 	defer resp.Body.Close()
-	body, _ := ioutil.ReadAll(resp.Body)
+	body, err2 := ioutil.ReadAll(resp.Body)
+	if err2 != nil {
+		logger.Logf(t, "error getting http body")
+	}
 
 	var response httpResponseDummy
 	response.Body = strings.TrimSpace(string(body))

@@ -23,3 +23,13 @@ variable "s3_endpoint" {
   type = string
   default = "com.amazonaws.us-east-1.s3"
 }
+
+variable "flow_log_iam_role" {
+  type    = string
+  default = "flow_log"
+}
+
+variable "flow_log_iam_role_policy" {
+  type    = string
+  default = "allow_logs"
+}

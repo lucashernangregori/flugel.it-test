@@ -86,16 +86,32 @@ func testURL(t *testing.T, endpoint string, path string, expectedStatus int, exp
 	url := fmt.Sprintf("%s://%s/%s", "http", endpoint, path)
 	actionDescription := fmt.Sprintf("Calling %s", url)
 	output := retry.DoWithRetry(t, actionDescription, 100, 30*time.Second, func() (string, error) {
-		statusCode, body := http_helper.HttpGet(t, url, nil)
-		if statusCode == expectedStatus {
+		channel := make(chan httpResponse)
+		go makeRequest(t, url, channel)
+		//statusCode, body := http_helper.HttpGet(t, url, nil)
+		response := <-channel
+		if response.StatusCode == expectedStatus {
 			logger.Logf(t, "Got expected status code %d from URL %s", expectedStatus, url)
 			hits++
 		}
 		if hits >= minHits {
 			logger.Logf(t, "Got expected hits count: %d", minHits)
-			return body, nil
+			return response.Body, nil
 		}
-		return "", fmt.Errorf("got status %d instead of the expected %d from %s", statusCode, expectedStatus, url)
+		return "", fmt.Errorf("got status %d instead of the expected %d from %s", response.StatusCode, expectedStatus, url)
 	})
 	assert.Contains(t, output, expectedBody, "Body should contain expected text")
+}
+
+func makeRequest(t *testing.T, url string, c chan httpResponse) {
+	statusCode, body := http_helper.HttpGet(t, url, nil)
+	var response httpResponse
+	response.Body = body
+	response.StatusCode = statusCode
+	c <- response // send response to channel
+}
+
+type httpResponse struct {
+	Body       string
+	StatusCode int
 }

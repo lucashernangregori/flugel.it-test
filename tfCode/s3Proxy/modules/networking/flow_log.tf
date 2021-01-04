@@ -1,5 +1,5 @@
 resource "aws_cloudwatch_log_group" "test" {
-  name = "test"
+  name = var.cloudwatch_vpc_flow_log_group_name
 }
 
 resource "aws_flow_log" "test" {

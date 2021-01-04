@@ -33,3 +33,8 @@ variable "flow_log_iam_role_policy" {
   type    = string
   default = "allow_logs"
 }
+
+variable "cloudwatch_vpc_flow_log_group_name" {
+  type    = string
+  default = "test"
+}

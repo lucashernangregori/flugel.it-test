@@ -34,9 +34,10 @@ module "networking" {
   public_subnets  = var.public_subnets
   private_subnets = var.private_subnets
 
-  s3_endpoint              = var.s3_endpoint
-  flow_log_iam_role        = var.flow_log_iam_role
-  flow_log_iam_role_policy = var.flow_log_iam_role_policy
+  s3_endpoint                        = var.s3_endpoint
+  flow_log_iam_role                  = var.flow_log_iam_role
+  flow_log_iam_role_policy           = var.flow_log_iam_role_policy
+  cloudwatch_vpc_flow_log_group_name = var.cloudwatch_vpc_flow_log_group_name
 }
 
 module "bastion_host" {

@@ -122,4 +122,4 @@ There is a build.sh bash script that builds the image and runs the container.
 In the ec2 user_data we have a template for dynamic.yml in order to inject different bucket names and s3 regions for testing and flexibility purposes.
 
 
-Enjoy!
+Enjoy!!!

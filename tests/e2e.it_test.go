@@ -30,6 +30,7 @@ func TestE2EDummy(t *testing.T) {
 	expectedBucketName := fmt.Sprintf("flugel.it.lucashernangregori.com.terratest-%s", strings.ToLower(random.UniqueId()))
 	s3IamRoleName := fmt.Sprintf("s3_reader-%s", strings.ToLower(random.UniqueId()))
 	flowIamRoleName := fmt.Sprintf("flow_log-%s", strings.ToLower(random.UniqueId()))
+	cloudwatchVpcFlowLogGroupName := fmt.Sprintf("test-%s", strings.ToLower(random.UniqueId()))
 	traefikInstanceProfile := fmt.Sprintf("traefik-%s", strings.ToLower(random.UniqueId()))
 	traefikInstancesCount := 2
 
@@ -43,17 +44,18 @@ func TestE2EDummy(t *testing.T) {
 			"AWS_DEFAULT_REGION": awsRegion,
 		},
 		Vars: map[string]interface{}{
-			"vpc_cidr":                 vpcCidr,
-			"public_subnets":           publicSubnetCidr,
-			"private_subnets":          privateSubnetCidr,
-			"enable_nat":               true,
-			"s3_endpoint":              s3Endpoint,
-			"region_master":            awsRegion,
-			"bucket_name":              expectedBucketName,
-			"s3_iam_role":              s3IamRoleName,
-			"traefik_instance_profile": traefikInstanceProfile,
-			"traefik_instances_count":  traefikInstancesCount,
-			"flow_log_iam_role":        flowIamRoleName,
+			"vpc_cidr":                           vpcCidr,
+			"public_subnets":                     publicSubnetCidr,
+			"private_subnets":                    privateSubnetCidr,
+			"enable_nat":                         true,
+			"s3_endpoint":                        s3Endpoint,
+			"region_master":                      awsRegion,
+			"bucket_name":                        expectedBucketName,
+			"s3_iam_role":                        s3IamRoleName,
+			"traefik_instance_profile":           traefikInstanceProfile,
+			"traefik_instances_count":            traefikInstancesCount,
+			"flow_log_iam_role":                  flowIamRoleName,
+			"cloudwatch_vpc_flow_log_group_name": cloudwatchVpcFlowLogGroupName,
 		},
 	})
 

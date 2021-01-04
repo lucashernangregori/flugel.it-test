@@ -19,10 +19,6 @@ resource "aws_instance" "traefik" {
     aws_security_group.traefik.id,
   ]
 
-  metadata_options{
-    http_tokens = "required"
-  }
-
   user_data = <<EOF
 #!/bin/bash
 cd /home/ubuntu 

@@ -3,7 +3,7 @@ resource "aws_cloudwatch_log_group" "test" {
 }
 
 resource "aws_flow_log" "test" {
-  iam_role_arn    = aws_iam_role.example.arn
+  iam_role_arn    = aws_iam_role.flow_log.arn
   log_destination = aws_cloudwatch_log_group.test.arn
   traffic_type    = "ALL"
   vpc_id          = aws_vpc.test.id

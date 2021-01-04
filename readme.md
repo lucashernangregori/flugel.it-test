@@ -2,12 +2,13 @@
 
 ### This repo contains TERRAFORM code which does the following actions:
 ### *Creates a vpc, two public subnets and two private subnets on two different availability zones. Private subnets have a Nat gateway
+### The vpc have log flows enabled that routes to cloudwatch logs. This is used to comply with super linter rules
 ### *Creates a S3 bucket with two files with the timestamp of the moment when the code is executed.
 ### *Creates an s3 service endpoint to route requests without going out to the internet. The routing is on private subnets.
 ### *Set up permission and roles to secure s3 bucket
 ### *Creates 2 ec2 instances on private subnets which clones a repo with aditional files (more details on its section) ### *Install docker and runs traefik v2.3.6 image with custom config and plugins
 ### *Set up traefik to forward requests using iam_role via plugin
-### *Creates an ALB with a target group pointing to the ec2 instances (internet facing ALB must be sitting on two public subnets with different AZs in order to be created)
+### *Creates an ALB with a target group pointing to the ec2 instances (internet facing ALB must be sitting on two public subnets with different AZs in order to be created). It can be pointed to a private subnet, the requests will fail to reach to elb when they are routed through that subnet. Therefore it will not be stable.
 ### *Optionally creates an ec2 instance to use as a bastion host form debugging purposes
 ### The S3 bucket is versioned and has a policy which only allows the user cloud_user to perform actions on it. This is coded that way in order to follow the best practices that Super-Linter recommends.
 

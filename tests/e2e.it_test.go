@@ -29,6 +29,7 @@ func TestE2EDummy(t *testing.T) {
 	s3Endpoint := "com.amazonaws." + awsRegion + ".s3"
 	expectedBucketName := fmt.Sprintf("flugel.it.lucashernangregori.com.terratest-%s", strings.ToLower(random.UniqueId()))
 	s3IamRoleName := fmt.Sprintf("s3_reader-%s", strings.ToLower(random.UniqueId()))
+	flowIamRoleName := fmt.Sprintf("flow_log-%s", strings.ToLower(random.UniqueId()))
 	traefikInstanceProfile := fmt.Sprintf("traefik-%s", strings.ToLower(random.UniqueId()))
 	traefikInstancesCount := 2
 
@@ -52,6 +53,7 @@ func TestE2EDummy(t *testing.T) {
 			"s3_iam_role":              s3IamRoleName,
 			"traefik_instance_profile": traefikInstanceProfile,
 			"traefik_instances_count":  traefikInstancesCount,
+			"flow_log_iam_role":        flowIamRoleName,
 		},
 	})
 

@@ -20,7 +20,7 @@ variable "enable_nat" {
 }
 
 variable "s3_endpoint" {
-  type = string
+  type    = string
   default = "com.amazonaws.us-east-1.s3"
 }
 

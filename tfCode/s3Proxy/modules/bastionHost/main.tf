@@ -7,10 +7,6 @@ resource "aws_instance" "bastion" {
 
   iam_instance_profile = var.instance_role_id == "" ? null : var.instance_role_id
 
-  metadata_options{
-    http_tokens = "required"
-  }
-
   vpc_security_group_ids = [
     aws_security_group.bastion.id,
     aws_security_group.remote_troubleshooting.id

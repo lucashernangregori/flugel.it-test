@@ -1,10 +1,20 @@
 # flugel.it Challenge
 
-### This repo contains TERRAFORM code which creates a S3 bucket with two files with the timestamp of the moment when the code is executed.
+### This repo contains TERRAFORM code which does the following actions:
+### *Creates a vpc, two public subnets and two private subnets on two different availability zones. Private subnets have a Nat gateway
+### The vpc have log flows enabled that routes to cloudwatch logs. This is used to comply with super linter rules
+### *Creates a S3 bucket with two files with the timestamp of the moment when the code is executed.
+### *Creates an s3 service endpoint to route requests without going out to the internet. The routing is on private subnets.
+### *Set up permission and roles to secure s3 bucket
+### *Creates 2 ec2 instances on private subnets which clones a repo with aditional files (more details on its section) ### *Install docker and runs traefik v2.3.6 image with custom config and plugins
+### *Set up traefik to forward requests using iam_role via plugin
+### *Creates an ALB with a target group pointing to the ec2 instances (internet facing ALB must be sitting on two public subnets with different AZs in order to be created). It can be pointed to a private subnet, the requests will fail to reach to elb when they are routed through that subnet. Therefore it will not be stable.
+### *Optionally creates an ec2 instance to use as a bastion host form debugging purposes
 ### The S3 bucket is versioned and has a policy which only allows the user cloud_user to perform actions on it. This is coded that way in order to follow the best practices that Super-Linter recommends.
 
 ### The repo also contains tests for the TERRAFORM code. Those tests use the TERRATEST GO library in order to perform its magic.
 ### The tests checks for the existence of the bucket, the versioned settings, if it has a policy attached and finally the files and its contents to match the desired timestamp.
+### There is an additional E2E test, which creates all the infrastructure already detailed and makes a request to the ALB to get the s3 file trough traefik running on ec2 instances. In order to test that we are reaching the two instances, it checks for 6 status code 200. Then it checks for the file content to be correct.
 
 ### Finally the repo contains a file to use github automation: Github Actions which is described later in this readme.
 
@@ -95,5 +105,21 @@ The command to copy the files is specified in the testAction.yml file
 ```
 cp -R ~/go /home/runner/work/_temp/_github_home/go
 ```
+## Traefik Custom Plugin
+Sometimes we might think that attaching a role to an ec2 instance with the proper permissions is enough to make a successful s3 request to a protected bucket.
+But thats only the case when we do that request from aws cli or aws sdk.
+For every other petition, we need to sign that request. We can use the v2 or the v4 method. (https://docs.aws.amazon.com/AmazonS3/latest/dev/S3_Authentication2.html)
+For instance, if we issue a plain curl command we will get a 403 status code. We need to add the correct headers to get a 200 status code.
+With traefik we must do the same. I doesn't have support out of the box. So I wrote a custom plugin to make requests work as intended.
+To use the plugin we need to get traefik pilot token (https://doc.traefik.io/traefik/plugins/)
+We use the plugin on dev mode, in order to not to publish to github and appear on pilot store. The dev mode has the limitation that only works for 30 minutes, then it shuts down the server. But this is enough for the MVP.
+We use traefik with two config files: one is static configuration, called traefik.yml and the other is dynamic configuration, called dynamic.yml.
+Static configuration can only be applied at startup, in that file we specify our token and our plugin path.
+In the dynamic configuration, we set the router, the services and the middleware (in our case, the plugin)
+All of these configurations are pulled from my github repo https://github.com/lucashernangregori/traefik-plugindemo on the ec2 instances boot via user_data.
+On that repo the plugin resides. Along with a docker file to copy the plugin to the image.
+There is a build.sh bash script that builds the image and runs the container.
+In the ec2 user_data we have a template for dynamic.yml in order to inject different bucket names and s3 regions for testing and flexibility purposes.
+
 
 Enjoy!!!
